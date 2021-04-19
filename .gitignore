@@ -1,5 +1,6 @@
 #IntelijIDEA project files
 *.iml
+*/*.idea
 
 # Compiled class file
 *.class
