@@ -22,7 +22,7 @@ public class CSV implements TableFormat {
 
     @Value(value = "${csv.separator}")
     private char separator;
-    @Value(value = "${csv.ignore_quatations}")
+    @Value(value = "${csv.ignore_quotations}")
     private boolean ignore_quotations;
 
     private String path = null;
@@ -33,14 +33,6 @@ public class CSV implements TableFormat {
         String abs_path = Paths.get(Objects.requireNonNull(ClassLoader.getSystemClassLoader()
                 .getResource(rel_path)).toURI()).toString();
         setPath(abs_path);
-        parseSettings(separator,ignore_quotations);
-        open();
-    }
-
-    public void setSeparator(char separator) { this.separator = separator; }
-
-    public void setIgnore_quotations(boolean ignore_quotations) {
-        this.ignore_quotations = ignore_quotations;
     }
 
     public void setPath(String path) {
@@ -63,17 +55,8 @@ public class CSV implements TableFormat {
         return csvReader;
     }
 
-    /**
-     * @param separator Sets the delimiter to use for separating entries.
-     * @param ignore_quatations Sets the ignore quotations mode - if true, quotations are ignored.
-     */
-    public void parseSettings(char separator, boolean ignore_quatations) {
-        setSeparator(separator);
-        setIgnore_quotations(ignore_quatations);
-    }
-
     @Override
-    public void open() {
+    public void openFile() {
         try {
             setReader(FileUtils.readFile(path));
         } catch (IOException e) {
@@ -85,7 +68,7 @@ public class CSV implements TableFormat {
     }
 
     @Override
-    public void close() {
+    public void closeFile() {
         try {
             this.reader.close();
             this.csvReader.close();
@@ -94,12 +77,6 @@ public class CSV implements TableFormat {
         } catch (IOException e) {
             System.out.println(e.toString());
         }
-    }
-
-    @Override
-    public void reOpen(){
-        close();
-        open();
     }
 
     public List<String[]> readRawLines(){
@@ -114,6 +91,7 @@ public class CSV implements TableFormat {
 
     @Override
     public String read(){
+        openFile();
         StringBuilder data = new StringBuilder();
         List<String[]> lines = readRawLines();
         for (String[] row: lines) {
@@ -128,6 +106,7 @@ public class CSV implements TableFormat {
             }
             data.append("\n");
         }
+        closeFile();
         return data.toString();
     }
 }

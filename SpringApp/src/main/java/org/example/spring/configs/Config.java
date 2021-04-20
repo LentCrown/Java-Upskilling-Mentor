@@ -15,14 +15,18 @@ import java.util.Objects;
 @PropertySource("classpath:csv.properties")
 public class Config {
 
-    @Value(value = "${csv.separator}")
-    private char separator;
-    @Value(value = "${csv.ignore_quotations}")
-    private boolean ignore_quotations;
+    @Value(value = "${csv.path}")
+    private String path;
 
     @Bean
     @Lazy()
-    CSV csv(String path) throws URISyntaxException {
+    CSV basic() throws URISyntaxException {
         return new CSV(path);
+    }
+
+    @Bean
+    @Lazy()
+    CSV param(String parameter) throws URISyntaxException {
+        return new CSV(parameter);
     }
 }

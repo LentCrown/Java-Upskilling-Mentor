@@ -32,19 +32,9 @@ public class SpringAppTest {
     @BeforeAll
     static void initContext() {
         context = new AnnotationConfigApplicationContext(Config.class);
-        csv = (CSV) context.getBean("csv", TEST_FILE );
+        //csv = (CSV) context.getBean("basic");
+        csv = (CSV) context.getBean("param", "Example1.csv");
         System.out.println("File: " + TEST_FILE + "\n\n#######Starting test sequence######");
-    }
-
-    @BeforeEach
-    void reOpenFile(){
-        System.out.print("Re-opening file.. ");
-
-        csv.reOpen();
-        Assert.notNull(csv.getCsvReader(),"CSVReader=null");
-        Assert.notNull(csv.getReader(), "Reader=null");
-
-        System.out.println("OK.");
     }
 
     @Test
@@ -66,7 +56,6 @@ public class SpringAppTest {
 
         String before_closing, after_closing;
         before_closing = csv.read();
-        csv.reOpen();
         after_closing = csv.read();
         Assert.hasText(after_closing, "We failed to read csv file content!");
         Assertions.assertEquals(after_closing, before_closing);
@@ -77,6 +66,7 @@ public class SpringAppTest {
     @AfterAll
     static void destroy(){
         csv = null;
+        context.close();
         context = null;
     }
 
