@@ -14,14 +14,14 @@ public class Main {
         String path = null;
         try {
             path = Paths.get(Objects.requireNonNull(ClassLoader.getSystemClassLoader()
-                    .getResource("Example1.txt")).toURI()).toString();
+                    .getResource("Example1.csv")).toURI()).toString();
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
         CSV.parseSettings(';', true);
         CSV file = (CSV) context.getBean("csv",path);
         String file_content = file.read();
-        file.closeFile();
+        file.close();
         System.out.println(file_content);
     }
 }

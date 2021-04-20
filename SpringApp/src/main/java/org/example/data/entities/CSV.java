@@ -3,13 +3,15 @@ package org.example.data.entities;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.example.utils.FileUtils;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CSV {
+@Service
+public class CSV implements TableFormat {
 
     public static char separator = ';';
     public static boolean ignore_quotations = true;
@@ -20,7 +22,7 @@ public class CSV {
 
     public CSV(String path){
         setPath(path);
-        openFile();
+        open();
     }
 
     public void setPath(String path) {
@@ -43,7 +45,8 @@ public class CSV {
         return csvReader;
     }
 
-    public void openFile() {
+    @Override
+    public void open() {
         try {
             setReader(FileUtils.readFile(path));
         } catch (IOException e) {
@@ -54,7 +57,8 @@ public class CSV {
         setCsvReader(FileUtils.getCsvReader(reader, separator, ignore_quotations));
     }
 
-    public void closeFile() {
+    @Override
+    public void close() {
         try {
             this.reader.close();
             this.csvReader.close();
@@ -65,9 +69,9 @@ public class CSV {
         }
     }
 
-    public void reOpenFile(){
-        closeFile();
-        openFile();
+    public void reOpen(){
+        close();
+        open();
     }
 
     public List<String[]> readRawLines(){
@@ -80,6 +84,7 @@ public class CSV {
         return lines;
     }
 
+    @Override
     public String read(){
         StringBuilder data = new StringBuilder();
         List<String[]> lines = readRawLines();

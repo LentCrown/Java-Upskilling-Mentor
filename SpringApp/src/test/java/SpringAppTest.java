@@ -40,7 +40,7 @@ public class SpringAppTest {
     void reOpenFile(){
         System.out.print("Re-opening file.. ");
 
-        csv.reOpenFile();
+        csv.reOpen();
         Assert.notNull(csv.getCsvReader(),"CSVReader=null");
         Assert.notNull(csv.getReader(), "Reader=null");
 
@@ -66,7 +66,7 @@ public class SpringAppTest {
 
         String before_closing, after_closing;
         before_closing = csv.read();
-        csv.reOpenFile();
+        csv.reOpen();
         after_closing = csv.read();
         Assert.hasText(after_closing, "We failed to read csv file content!");
         Assertions.assertEquals(after_closing, before_closing);
