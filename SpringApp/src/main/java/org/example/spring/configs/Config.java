@@ -7,10 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
 
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
-import java.util.Objects;
-
 @Configuration
 @PropertySource("classpath:csv.properties")
 public class Config {
@@ -20,13 +16,9 @@ public class Config {
 
     @Bean
     @Lazy()
-    CSV basic() throws URISyntaxException {
-        return new CSV(path);
-    }
-
-    @Bean
-    @Lazy()
-    CSV param(String parameter) throws URISyntaxException {
-        return new CSV(parameter);
+    CSV csv() {
+        CSV csv = new CSV();
+        csv.setPath(path,true);
+        return csv;
     }
 }

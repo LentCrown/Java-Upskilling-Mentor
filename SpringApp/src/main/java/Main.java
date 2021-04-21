@@ -2,13 +2,20 @@ import org.example.data.entities.CSV;
 import org.example.spring.configs.Config;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.util.List;
+
 public class Main {
 
     private static final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
 
     public static void main(String[] args) {
-        //String file_content = ((CSV) context.getBean("param", "Example1.csv")).read();
-        String file_content = ((CSV) context.getBean("basic")).read();
-        System.out.println(file_content);
+        List<String[]> dataRaw = context.getBean("csv", CSV.class).readRawLines();
+        List<String> dataColumn = context.getBean("csv", CSV.class).readColumn("Question");
+        String data = context.getBean("csv", CSV.class).read();
+        System.out.println(dataRaw);
+        System.out.println();
+        System.out.println(dataColumn);
+        System.out.println();
+        System.out.println(data);
     }
 }

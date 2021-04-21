@@ -3,18 +3,13 @@ package org.example.data.entities;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.example.utils.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @PropertySource("classpath:csv.properties")
@@ -24,38 +19,26 @@ public class CSV implements TableFormat {
     private char separator;
     @Value(value = "${csv.ignore_quotations}")
     private boolean ignore_quotations;
-
     private String path = null;
     private Reader reader = null;
     private CSVReader csvReader = null;
 
-    public CSV(String rel_path) throws URISyntaxException {
-        String abs_path = Paths.get(Objects.requireNonNull(ClassLoader.getSystemClassLoader()
-                .getResource(rel_path)).toURI()).toString();
-        setPath(abs_path);
+    public CSV(){
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setPath(String path, boolean inResources){
+        if (inResources)
+            this.path = FileUtils.getResource(path);
+        else
+            this.path = path;
     }
 
-    public void setReader(Reader reader) {
+    private void setReader(Reader reader) {
         this.reader = reader;
     }
 
-    public void setCsvReader(CSVReader csvReader) {
-        this.csvReader = csvReader;
-    }
+    private void setCsvReader(CSVReader csvReader) { this.csvReader = csvReader; }
 
-    public Reader getReader(){
-        return reader;
-    }
-
-    public CSVReader getCsvReader(){
-        return csvReader;
-    }
-
-    @Override
     public void openFile() {
         try {
             setReader(FileUtils.readFile(path));
@@ -67,7 +50,6 @@ public class CSV implements TableFormat {
         setCsvReader(FileUtils.getCsvReader(reader, separator, ignore_quotations));
     }
 
-    @Override
     public void closeFile() {
         try {
             this.reader.close();
@@ -79,21 +61,43 @@ public class CSV implements TableFormat {
         }
     }
 
+    @Override
     public List<String[]> readRawLines(){
+        if (path==null)
+            return null;
+        openFile();
         List<String[]> lines = new ArrayList<>();
         try {
             lines = this.csvReader.readAll();
         } catch (IOException | CsvException e) {
             System.out.println(e);
         }
+        closeFile();
         return lines;
     }
 
     @Override
+    public List<String> readColumn(String colName) {
+        List<String> col = new LinkedList<>();
+        Deque<String[]> deque = new LinkedList<>(readRawLines());
+
+        Integer orderNum = FileUtils.getColumnOrder(deque.getFirst(), colName);
+        if (orderNum==null)
+            System.out.println("No such column");
+
+        deque.removeFirst();
+        for (String[] line: deque){
+            col.add(line[orderNum]);
+        }
+        return col;
+    }
+
+    @Override
     public String read(){
-        openFile();
         StringBuilder data = new StringBuilder();
         List<String[]> lines = readRawLines();
+        if (lines==null)
+            return null;
         for (String[] row: lines) {
             int size = row.length;
             int iter = 0;
@@ -106,7 +110,6 @@ public class CSV implements TableFormat {
             }
             data.append("\n");
         }
-        closeFile();
         return data.toString();
     }
 }

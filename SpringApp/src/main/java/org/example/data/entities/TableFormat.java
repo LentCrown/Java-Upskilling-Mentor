@@ -1,7 +1,9 @@
 package org.example.data.entities;
 
+import java.util.List;
+
 interface TableFormat {
-    void openFile();
-    void closeFile();
+    List<String[]> readRawLines();
+    List<String> readColumn(String colName);
     String read();
 }
