@@ -39,7 +39,7 @@ public class CSV implements TableFormat {
 
     private void setCsvReader(CSVReader csvReader) { this.csvReader = csvReader; }
 
-    public void openFile() {
+    private void openFile() {
         try {
             setReader(FileUtils.readFile(path));
         } catch (IOException e) {
@@ -50,7 +50,7 @@ public class CSV implements TableFormat {
         setCsvReader(FileUtils.getCsvReader(reader, separator, ignore_quotations));
     }
 
-    public void closeFile() {
+    private void closeFile() {
         try {
             this.reader.close();
             this.csvReader.close();
