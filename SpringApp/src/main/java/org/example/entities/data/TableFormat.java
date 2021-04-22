@@ -1,4 +1,4 @@
-package org.example.data.entities;
+package org.example.entities.data;
 
 import java.util.List;
 

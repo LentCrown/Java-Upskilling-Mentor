@@ -1,4 +1,4 @@
-package org.example.data.entities;
+package org.example.entities.data;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;

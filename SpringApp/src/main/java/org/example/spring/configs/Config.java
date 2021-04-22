@@ -1,6 +1,6 @@
 package org.example.spring.configs;
 
-import org.example.data.entities.CSV;
+import org.example.entities.data.CSV;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

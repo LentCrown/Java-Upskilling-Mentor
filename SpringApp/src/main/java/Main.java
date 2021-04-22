@@ -1,4 +1,4 @@
-import org.example.data.entities.CSV;
+import org.example.entities.data.CSV;
 import org.example.spring.configs.Config;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

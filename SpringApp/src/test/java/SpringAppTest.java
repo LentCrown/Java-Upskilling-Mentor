@@ -1,4 +1,4 @@
-import org.example.data.entities.CSV;
+import org.example.entities.data.CSV;
 import org.example.spring.configs.Config;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -7,7 +7,6 @@ import org.springframework.util.Assert;
 import org.junit.jupiter.api.*;
 
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Objects;
