@@ -1,3 +1,4 @@
+import org.example.entities.Question;
 import org.example.entities.data.CSV;
 import org.example.spring.configs.Config;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -9,13 +10,8 @@ public class Main {
     private static final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
 
     public static void main(String[] args) {
-        List<String[]> dataRaw = context.getBean("csv", CSV.class).readRawLines();
-        List<String> dataColumn = context.getBean("csv", CSV.class).readColumn("Question");
-        String data = context.getBean("csv", CSV.class).read();
-        System.out.println(dataRaw);
-        System.out.println();
-        System.out.println(dataColumn);
-        System.out.println();
-        System.out.println(data);
+        List<Question> questions = context.getBean("csv", CSV.class).getQuestionsRel("Example1.csv");
+        for (Question question: questions) System.out.println(question.toString());
+        context.close();
     }
 }

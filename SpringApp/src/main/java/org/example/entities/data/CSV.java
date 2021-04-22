@@ -2,6 +2,7 @@ package org.example.entities.data;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+import org.example.entities.Question;
 import org.example.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -13,24 +14,16 @@ import java.util.*;
 
 @Service
 @PropertySource("classpath:csv.properties")
-public class CSV implements TableFormat {
+public class CSV implements QuestionsDao {
 
     @Value(value = "${csv.separator}")
     private char separator;
     @Value(value = "${csv.ignore_quotations}")
     private boolean ignore_quotations;
-    private String path = null;
     private Reader reader = null;
     private CSVReader csvReader = null;
 
     public CSV(){
-    }
-
-    public void setPath(String path, boolean inResources){
-        if (inResources)
-            this.path = FileUtils.getResource(path);
-        else
-            this.path = path;
     }
 
     private void setReader(Reader reader) {
@@ -39,7 +32,7 @@ public class CSV implements TableFormat {
 
     private void setCsvReader(CSVReader csvReader) { this.csvReader = csvReader; }
 
-    private void openFile() {
+    private void openFile(String path) {
         try {
             setReader(FileUtils.readFile(path));
         } catch (IOException e) {
@@ -61,11 +54,10 @@ public class CSV implements TableFormat {
         }
     }
 
-    @Override
-    public List<String[]> readRawLines(){
-        if (path==null)
+    public List<String[]> readRawLines(String source){
+        if (source==null)
             return null;
-        openFile();
+        openFile(source);
         List<String[]> lines = new ArrayList<>();
         try {
             lines = this.csvReader.readAll();
@@ -76,26 +68,9 @@ public class CSV implements TableFormat {
         return lines;
     }
 
-    @Override
-    public List<String> readColumn(String colName) {
-        List<String> col = new LinkedList<>();
-        Deque<String[]> deque = new LinkedList<>(readRawLines());
-
-        Integer orderNum = FileUtils.getColumnOrder(deque.getFirst(), colName);
-        if (orderNum==null)
-            System.out.println("No such column");
-
-        deque.removeFirst();
-        for (String[] line: deque){
-            col.add(line[orderNum]);
-        }
-        return col;
-    }
-
-    @Override
-    public String read(){
+    public String read(String source){
         StringBuilder data = new StringBuilder();
-        List<String[]> lines = readRawLines();
+        List<String[]> lines = readRawLines(source);
         if (lines==null)
             return null;
         for (String[] row: lines) {
@@ -112,4 +87,36 @@ public class CSV implements TableFormat {
         }
         return data.toString();
     }
+
+    public List<String> readColumn(String source, String colName) {
+        List<String> col = new LinkedList<>();
+        Deque<String[]> deque = new LinkedList<>(readRawLines(source));
+
+        Integer orderNum = FileUtils.getColumnOrder(deque.getFirst(), colName);
+        if (orderNum==null)
+            return null;
+
+        deque.removeFirst();
+        for (String[] line: deque){
+            col.add(line[orderNum]);
+        }
+        return col;
+    }
+
+    @Override
+    public List<Question> getQuestions(String source){
+        List<Question> questions = new LinkedList<>();
+        List<String> column = readColumn(source, "Question");
+        int i = 1;
+        for (String row: column){
+            questions.add(new Question(i,row));
+            i++;
+        }
+        return questions;
+    }
+
+    public List<Question> getQuestionsRel(String source){
+        return getQuestions(FileUtils.getResource(source));
+    }
+
 }

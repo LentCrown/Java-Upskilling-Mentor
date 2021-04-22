@@ -1,3 +1,4 @@
+import org.example.entities.Question;
 import org.example.entities.data.CSV;
 import org.example.spring.configs.Config;
 
@@ -6,24 +7,13 @@ import org.springframework.util.Assert;
 
 import org.junit.jupiter.api.*;
 
-
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
-import java.util.Objects;
+import java.util.List;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("Spring application testing")
 public class SpringAppTest {
-    private static String TEST_FILE;
-
-    static {
-        try {
-            TEST_FILE = Paths.get(Objects.requireNonNull(ClassLoader.getSystemClassLoader()
-                    .getResource("Example1.csv")).toURI()).toString();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
+    private static String TEST_FILE = "Example1.csv";
+    private static boolean IS_RELATIVE = true;
 
     private static AnnotationConfigApplicationContext context;
     private static CSV csv;
@@ -31,8 +21,7 @@ public class SpringAppTest {
     @BeforeAll
     static void initContext() {
         context = new AnnotationConfigApplicationContext(Config.class);
-        //csv = (CSV) context.getBean("basic");
-        csv = (CSV) context.getBean("param", "Example1.csv");
+        csv = context.getBean("csv", CSV.class);
         System.out.println("File: " + TEST_FILE + "\n\n#######Starting test sequence######");
     }
 
@@ -41,7 +30,7 @@ public class SpringAppTest {
     void testRead(){
         System.out.print("Read file test.. ");
 
-        String output = csv.read();
+        String output = csv.read(TEST_FILE);
         Assert.hasText(output, "We failed read csv file content!");
 
         System.out.println("Passed.\n");
@@ -54,12 +43,24 @@ public class SpringAppTest {
         System.out.print("Close file test.. ");
 
         String before_closing, after_closing;
-        before_closing = csv.read();
-        after_closing = csv.read();
+        before_closing = csv.read(TEST_FILE);
+        after_closing = csv.read(TEST_FILE);
         Assert.hasText(after_closing, "We failed to read csv file content!");
         Assertions.assertEquals(after_closing, before_closing);
 
         System.out.print("Passed.");
+    }
+
+    @Test
+    @DisplayName("Get questions")
+    void testQuestions(){
+        System.out.print("Get list of <Question> objects.. ");
+
+        List<Question> questionList = csv.getQuestions(TEST_FILE);
+        Assert.notNull(questionList, "Error in getting list of objects");
+
+        System.out.print("Passed.\n");
+        System.out.println(questionList);
     }
 
     @AfterAll
