@@ -90,13 +90,13 @@ public class CSV implements QuestionsDao {
 
     @Override
     public List<Question> getQuestions(String source){
-        List<Question> questions = new ArrayList<>();
         Deque<String[]> deque = new ArrayDeque<>(readRawLines(source));
         Integer orderNum = Utils.getColumnOrder(deque.getFirst(), "Question");
         if (orderNum==null)
             return null;
-        int i=1;
         deque.removeFirst();
+        List<Question> questions = new ArrayList<>();
+        int i=1;
         for (String[] line: deque){
             questions.add(new Question(i++,line[orderNum]));
         }
