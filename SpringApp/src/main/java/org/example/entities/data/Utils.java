@@ -1,4 +1,4 @@
-package org.example.utils;
+package org.example.entities.data;
 
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-public class FileUtils {
+public class Utils {
 
     /**
      * @param path absolute path to a file
@@ -45,5 +45,4 @@ public class FileUtils {
         }
         return null;
     }
-
 }

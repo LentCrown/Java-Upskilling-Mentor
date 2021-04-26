@@ -3,7 +3,6 @@ package org.example.entities.data;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.example.entities.Question;
-import org.example.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -34,13 +33,13 @@ public class CSV implements QuestionsDao {
 
     private void openFile(String path) {
         try {
-            setReader(FileUtils.readFile(path));
+            setReader(Utils.readFile(path));
         } catch (IOException e) {
             System.out.println(e.toString());
             this.reader = null;
             return;
         }
-        setCsvReader(FileUtils.getCsvReader(reader, separator, ignore_quotations));
+        setCsvReader(Utils.getCsvReader(reader, separator, ignore_quotations));
     }
 
     private void closeFile() {
@@ -55,6 +54,7 @@ public class CSV implements QuestionsDao {
     }
 
     public List<String[]> readRawLines(String source){
+        source = Utils.getResource(source);
         if (source==null)
             return null;
         openFile(source);
@@ -88,35 +88,18 @@ public class CSV implements QuestionsDao {
         return data.toString();
     }
 
-    public List<String> readColumn(String source, String colName) {
-        List<String> col = new LinkedList<>();
-        Deque<String[]> deque = new LinkedList<>(readRawLines(source));
-
-        Integer orderNum = FileUtils.getColumnOrder(deque.getFirst(), colName);
-        if (orderNum==null)
-            return null;
-
-        deque.removeFirst();
-        for (String[] line: deque){
-            col.add(line[orderNum]);
-        }
-        return col;
-    }
-
     @Override
     public List<Question> getQuestions(String source){
-        List<Question> questions = new LinkedList<>();
-        List<String> column = readColumn(source, "Question");
-        int i = 1;
-        for (String row: column){
-            questions.add(new Question(i,row));
-            i++;
+        List<Question> questions = new ArrayList<>();
+        Deque<String[]> deque = new ArrayDeque<>(readRawLines(source));
+        Integer orderNum = Utils.getColumnOrder(deque.getFirst(), "Question");
+        if (orderNum==null)
+            return null;
+        int i=1;
+        deque.removeFirst();
+        for (String[] line: deque){
+            questions.add(new Question(i++,line[orderNum]));
         }
         return questions;
     }
-
-    public List<Question> getQuestionsRel(String source){
-        return getQuestions(FileUtils.getResource(source));
-    }
-
 }

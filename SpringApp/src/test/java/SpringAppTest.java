@@ -31,7 +31,7 @@ public class SpringAppTest {
         System.out.print("Read file test.. ");
 
         String output = csv.read(TEST_FILE);
-        Assert.hasText(output, "We failed read csv file content!");
+        Assert.hasText(output, "We failed to read csv file content!");
 
         System.out.println("Passed.\n");
         System.out.println(output);

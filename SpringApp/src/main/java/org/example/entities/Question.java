@@ -5,32 +5,28 @@ import org.springframework.stereotype.Component;
 @Component
 public class Question implements Comparable<Question> {
 
-    private Integer number;
+    private Integer id;
     private String title;
 
     public Question(){
-        this.number = null;
+        this.id = null;
         this.title = null;
     }
-    public Question(Integer number, String title){
-        this.number = number;
+    public Question(Integer id, String title){
+        this.id = id;
         this.title = title;
     }
 
-    public int getNumber() {return number;}
+    public int getId() {return id;}
 
     public String getTitle() {return title;}
-
-    public void setNumber(int number) {this.number = number;}
-
-    public void setTitle(String title) {this.title = title;}
 
     public boolean equals(Object object){
         if (this==object) return true;
         if (object == null || getClass()!= object.getClass()) return false;
         if (object instanceof Question){
             Question question = (Question) object;
-            return (number.equals(question.number)
+            return (id.equals(question.id)
                     && title.equals(question.title));
         }
         return false;
@@ -40,14 +36,14 @@ public class Question implements Comparable<Question> {
     public int hashCode(){
         final int shift = 31;
         int result = 1;
-        result = shift * result + number.hashCode();
+        result = shift * result + id.hashCode();
         result = shift * result + title.hashCode();
         return result;
     }
 
     @Override
     public int compareTo(Question question){
-        int result = this.number.compareTo(question.number);
+        int result = this.id.compareTo(question.id);
         if (result == 0){
             result = this.title.compareTo(question.title);
         }
@@ -56,7 +52,7 @@ public class Question implements Comparable<Question> {
 
     @Override
     public String toString(){
-        return getNumber() + " " + getTitle();
+        return getId() + " " + getTitle();
     }
 
 }
