@@ -1,4 +1,4 @@
-import org.example.entities.Question;
+import org.example.entities.Questions;
 import org.example.entities.data.CSV;
 import org.example.spring.configs.Config;
 
@@ -56,7 +56,7 @@ public class SpringAppTest {
     void testQuestions(){
         System.out.print("Get list of <Question> objects.. ");
 
-        List<Question> questionList = csv.getQuestions(TEST_FILE);
+        List<Questions> questionList = csv.getQuestions(TEST_FILE);
         Assert.notNull(questionList, "Error in getting list of objects");
 
         System.out.print("Passed.\n");

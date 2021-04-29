@@ -1,9 +1,9 @@
 package org.example.entities.data;
 
-import org.example.entities.Question;
+import org.example.entities.Questions;
 
 import java.util.List;
 
 interface QuestionsDao {
-    List<Question> getQuestions(String source);
+    List<Questions> getQuestions(String source);
 }

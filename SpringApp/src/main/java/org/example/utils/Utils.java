@@ -1,4 +1,4 @@
-package org.example.entities.data;
+package org.example.utils;
 
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;

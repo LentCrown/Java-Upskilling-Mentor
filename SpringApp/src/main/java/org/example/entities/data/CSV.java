@@ -2,7 +2,8 @@ package org.example.entities.data;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
-import org.example.entities.Question;
+import org.example.entities.Questions;
+import org.example.utils.Utils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -89,16 +90,16 @@ public class CSV implements QuestionsDao {
     }
 
     @Override
-    public List<Question> getQuestions(String source){
+    public List<Questions> getQuestions(String source){
         Deque<String[]> deque = new ArrayDeque<>(readRawLines(source));
         Integer orderNum = Utils.getColumnOrder(deque.getFirst(), "Question");
         if (orderNum==null)
             return null;
         deque.removeFirst();
-        List<Question> questions = new ArrayList<>();
+        List<Questions> questions = new ArrayList<>();
         int i=1;
         for (String[] line: deque){
-            questions.add(new Question(i++,line[orderNum]));
+            questions.add(new Questions(i++,line[orderNum]));
         }
         return questions;
     }
