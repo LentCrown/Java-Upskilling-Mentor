@@ -1,33 +1,30 @@
 package org.example.entities;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
-@Component
-@Scope(value = "prototype")
 public class User {
     private String name;
-    @Autowired
     private Report report;
+    //TODO: Коллекция отчетов?
 
-    public User() {}
+    public User() {
+        name = null;
+        report = new Report();
+    }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void writeReport(Integer skipped, Integer total){
-        report.setTotal(total);
-        report.setAnswered(total - skipped);
-        float result = ((float) skipped/ (float) total)*100;
-        if (result<=report.getPassing_score()) report.setStatus(Status.PASSED);
-        report.setStatus(Status.FAILED);
+    public void setReport(Report report){
+        this.report = report;
     }
 
-    public void nullify(){
-        name=null;
-        report.nullify();
+    public Report getReport(){
+        return report;
+    }
+
+    public void reset(String name){
+        this.name = name;
+        report.reset();
     }
 
     @Override

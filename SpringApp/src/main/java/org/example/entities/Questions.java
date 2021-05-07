@@ -1,17 +1,9 @@
 package org.example.entities;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class Questions implements Comparable<Questions> {
-
     private Integer id;
     private String title;
 
-    public Questions(){
-        this.id = null;
-        this.title = null;
-    }
     public Questions(Integer id, String title){
         this.id = id;
         this.title = title;

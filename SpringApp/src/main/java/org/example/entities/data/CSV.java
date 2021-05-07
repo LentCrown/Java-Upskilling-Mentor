@@ -4,26 +4,28 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.example.entities.Questions;
 import org.example.utils.Utils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.util.*;
 
-@Service
-@PropertySource("classpath:csv.properties")
 public class CSV implements QuestionsDao {
-
-    @Value(value = "${csv.separator}")
     private char separator;
-    @Value(value = "${csv.ignore_quotations}")
     private boolean ignore_quotations;
-    private Reader reader = null;
-    private CSVReader csvReader = null;
+    private Reader reader;
+    private CSVReader csvReader;
 
     public CSV(){
+        reader = null;
+        csvReader = null;
+    }
+
+    public void setSeparator(char separator) {
+        this.separator = separator;
+    }
+
+    public void setIgnore_quotations(boolean ignore_quotations) {
+        this.ignore_quotations = ignore_quotations;
     }
 
     private void setReader(Reader reader) {

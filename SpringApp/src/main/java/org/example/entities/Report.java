@@ -1,18 +1,16 @@
 package org.example.entities;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-@Component
 public class Report {
-
-    private Integer total;
-    private Integer answered;
-    @Value(value = "${test.pass}")
+    private int total;
+    private int answered;
     private float passing_score;
     private Status status;
 
-    public Report(){}
+    public Report(){
+        total = 0;
+        answered = 0;
+        status = Status.FAILED;
+    }
 
     public void setTotal(Integer total) {
         this.total = total;
@@ -22,18 +20,22 @@ public class Report {
         this.answered = answered;
     }
 
-    public float getPassing_score() {
-        return passing_score;
-    }
+    public void setPassing_score(float passing_score) { this.passing_score = passing_score; }
 
     public void setStatus(Status status) {
         this.status = status;
     }
 
-    public void nullify(){
-        total=null;
-        answered=null;
-        status=null;
+    public void reset(){
+        total = 0;
+        answered = 0;
+        status = null;
+    }
+
+    public void process(){
+        float result = ((float) answered / (float) total) * 100;
+        if (result <= passing_score) setStatus(Status.FAILED);
+        setStatus(Status.PASSED);
     }
 
     @Override
