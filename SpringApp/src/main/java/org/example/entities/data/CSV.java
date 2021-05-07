@@ -2,58 +2,29 @@ package org.example.entities.data;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
-import org.example.entities.Questions;
+import org.example.entities.Question;
+import org.example.spring.configs.Config;
 import org.example.utils.Utils;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.util.*;
 
+@Service
 public class CSV implements QuestionsDao {
     private char separator;
     private boolean ignore_quotations;
     private Reader reader;
     private CSVReader csvReader;
+    private Config config;
 
     public CSV(){
         reader = null;
         csvReader = null;
-    }
-
-    public void setSeparator(char separator) {
-        this.separator = separator;
-    }
-
-    public void setIgnore_quotations(boolean ignore_quotations) {
-        this.ignore_quotations = ignore_quotations;
-    }
-
-    private void setReader(Reader reader) {
-        this.reader = reader;
-    }
-
-    private void setCsvReader(CSVReader csvReader) { this.csvReader = csvReader; }
-
-    private void openFile(String path) {
-        try {
-            setReader(Utils.readFile(path));
-        } catch (IOException e) {
-            System.out.println(e.toString());
-            this.reader = null;
-            return;
-        }
-        setCsvReader(Utils.getCsvReader(reader, separator, ignore_quotations));
-    }
-
-    private void closeFile() {
-        try {
-            this.reader.close();
-            this.csvReader.close();
-            this.reader = null;
-            this.csvReader = null;
-        } catch (IOException e) {
-            System.out.println(e.toString());
-        }
+        config = new Config();
+        separator = config.getSeparator();
+        ignore_quotations = config.isIgnore_quatations();
     }
 
     public List<String[]> readRawLines(String source){
@@ -92,17 +63,39 @@ public class CSV implements QuestionsDao {
     }
 
     @Override
-    public List<Questions> getQuestions(String source){
+    public List<Question> getQuestions(String source){
         Deque<String[]> deque = new ArrayDeque<>(readRawLines(source));
         Integer orderNum = Utils.getColumnOrder(deque.getFirst(), "Question");
         if (orderNum==null)
             return null;
         deque.removeFirst();
-        List<Questions> questions = new ArrayList<>();
+        List<Question> questions = new ArrayList<>();
         int i=1;
         for (String[] line: deque){
-            questions.add(new Questions(i++,line[orderNum]));
+            questions.add(new Question(i++,line[orderNum]));
         }
         return questions;
+    }
+
+    private void openFile(String path) {
+        try {
+            reader = Utils.readFile(path);
+        } catch (IOException e) {
+            System.out.println(e.toString());
+            this.reader = null;
+            return;
+        }
+        csvReader = Utils.getCsvReader(reader, separator, ignore_quotations);
+    }
+
+    private void closeFile() {
+        try {
+            this.reader.close();
+            this.reader = null;
+            this.csvReader.close();
+            this.csvReader = null;
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
     }
 }

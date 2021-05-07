@@ -1,6 +1,5 @@
-import org.example.entities.Questions;
+import org.example.entities.Question;
 import org.example.entities.data.CSV;
-import org.example.spring.configs.Config;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.util.Assert;
@@ -20,7 +19,7 @@ public class SpringAppTest {
 
     @BeforeAll
     static void initContext() {
-        context = new AnnotationConfigApplicationContext(Config.class);
+        context = new AnnotationConfigApplicationContext("org.example.launcher");
         csv = context.getBean("csv", CSV.class);
         System.out.println("File: " + TEST_FILE + "\n\n#######Starting test sequence######");
     }
@@ -56,7 +55,7 @@ public class SpringAppTest {
     void testQuestions(){
         System.out.print("Get list of <Question> objects.. ");
 
-        List<Questions> questionList = csv.getQuestions(TEST_FILE);
+        List<Question> questionList = csv.getQuestions(TEST_FILE);
         Assert.notNull(questionList, "Error in getting list of objects");
 
         System.out.print("Passed.\n");

@@ -1,46 +1,38 @@
 package org.example.launcher;
 
-import org.example.entities.Questions;
+import org.example.entities.Question;
 import org.example.entities.Report;
 import org.example.entities.User;
 import org.example.entities.data.CSV;
+import org.example.spring.configs.Config;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+@Service
+@PropertySource("classpath:prod.properties")
 public class App {
     private String source;
     private CSV csv;
     private User user;
+    private Config config;
 
     public App(){
-        source = null;
         csv = new CSV();
         user = new User();
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public void setCsv(char separator, boolean ignore_quotations) {
-        csv.setSeparator(separator);
-        csv.setIgnore_quotations(ignore_quotations);
-    }
-
-    public void setTestPassBorder(float passBorder){
-        Report report = user.getReport();
-        report.setPassing_score(passBorder);
-        user.setReport(report);
+        config = new Config();
+        source = config.getPath();
     }
 
     public void run() {
         String input;
         Report report = user.getReport();
         List<String> answers = new ArrayList<>();
-        List<Questions> questionsList = csv.getQuestions(source);
+        List<Question> questionList = csv.getQuestions(source);
         Scanner scan = new Scanner(System.in);
         while (true) {
             System.out.println("Welcome to questionnaire application!\n" +
@@ -52,13 +44,13 @@ public class App {
             if (input.equals("quit")) break;
             int answered = 0;
             user.reset(input);
-            report.setTotal(questionsList.size());
+            report.setTotal(questionList.size());
 
             System.out.println();
             System.out.println("Welcome, " + input +"! Prepare to answer on some questions...");
             System.out.println("###" + source + "###");
 
-            for (Questions question : questionsList) {
+            for (Question question : questionList) {
                 System.out.print(question.toString() + "> ");
                 input = scan.nextLine();
                 if (!input.isEmpty()) answered++;

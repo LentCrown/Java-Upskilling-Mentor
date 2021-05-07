@@ -1,23 +1,29 @@
 package org.example.spring.configs;
 
-import org.example.launcher.App;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.*;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
-@Configuration
-@PropertySource(value = "classpath:prod.properties")
+@Component
+//@PropertySource("classpath:prod.properties")
 public class Config {
 
-    @Autowired
-    Environment env;
+    //@Value("${csv.separator}")
+    private char separator = ';';
+    //@Value("${csv.ignore_quotations}")
+    private boolean ignore_quatations = true;
+    //@Value("${csv.path}")
+    private String path = "Example1.csv";
+    //@Value("${report.pass_border}")
+    private float pass_border = 70;
 
-    @Bean
-    App app(){
-        App app = new App();
-        app.setSource(env.getProperty("csv.path"));
-        app.setCsv(env.getProperty("csv.separator").charAt(0), Boolean.parseBoolean(env.getProperty("csv.ignore_quotations")));
-        app.setTestPassBorder(Float.parseFloat(env.getProperty("report.passing_score")));
-        return app;
-    }
+    public Config(){}
+
+    public char getSeparator() { return separator;}
+
+    public boolean isIgnore_quatations() { return ignore_quatations;}
+
+    public String getPath() { return path;}
+
+    public float getPass_border() {return pass_border;}
 }

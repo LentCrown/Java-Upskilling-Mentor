@@ -1,10 +1,9 @@
 import org.example.launcher.App;
-import org.example.spring.configs.Config;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 
 public class Main {
-    private static final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
+    private static final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("org.example.*");
 
     public static void main(String[] args){
         ((App) context.getBean("app")).run();

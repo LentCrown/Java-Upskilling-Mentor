@@ -1,5 +1,8 @@
 package org.example.entities;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class User {
     private String name;
     private Report report;
@@ -8,10 +11,6 @@ public class User {
     public User() {
         name = null;
         report = new Report();
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setReport(Report report){

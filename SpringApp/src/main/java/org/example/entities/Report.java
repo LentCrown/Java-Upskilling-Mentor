@@ -1,15 +1,22 @@
 package org.example.entities;
 
+import org.example.spring.configs.Config;
+import org.springframework.stereotype.Service;
+
+@Service
 public class Report {
     private int total;
     private int answered;
     private float passing_score;
     private Status status;
+    private Config config;
 
     public Report(){
         total = 0;
         answered = 0;
         status = Status.FAILED;
+        config = new Config();
+        passing_score = config.getPass_border();
     }
 
     public void setTotal(Integer total) {
@@ -34,8 +41,7 @@ public class Report {
 
     public void process(){
         float result = ((float) answered / (float) total) * 100;
-        if (result <= passing_score) setStatus(Status.FAILED);
-        setStatus(Status.PASSED);
+        if (result >= passing_score) setStatus(Status.PASSED);
     }
 
     @Override

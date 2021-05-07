@@ -1,10 +1,10 @@
 package org.example.entities;
 
-public class Questions implements Comparable<Questions> {
+public class Question implements Comparable<Question> {
     private Integer id;
     private String title;
 
-    public Questions(Integer id, String title){
+    public Question(Integer id, String title){
         this.id = id;
         this.title = title;
     }
@@ -16,8 +16,8 @@ public class Questions implements Comparable<Questions> {
     public boolean equals(Object object){
         if (this==object) return true;
         if (object == null || getClass()!= object.getClass()) return false;
-        if (object instanceof Questions){
-            Questions question = (Questions) object;
+        if (object instanceof Question){
+            Question question = (Question) object;
             return (id.equals(question.id)
                     && title.equals(question.title));
         }
@@ -34,7 +34,7 @@ public class Questions implements Comparable<Questions> {
     }
 
     @Override
-    public int compareTo(Questions question){
+    public int compareTo(Question question){
         int result = this.id.compareTo(question.id);
         if (result == 0){
             result = this.title.compareTo(question.title);
