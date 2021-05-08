@@ -1,8 +1,8 @@
 package org.example.entities;
 
 public class Question implements Comparable<Question> {
-    private Integer id;
-    private String title;
+    private final Integer id;
+    private final String title;
 
     public Question(Integer id, String title){
         this.id = id;
@@ -44,7 +44,8 @@ public class Question implements Comparable<Question> {
 
     @Override
     public String toString(){
-        return getId() + " " + getTitle();
+        StringBuilder string = new StringBuilder();
+        return string.append("Вопрос ").append(id+1).append(" : ").append(title).toString();
     }
 
 }

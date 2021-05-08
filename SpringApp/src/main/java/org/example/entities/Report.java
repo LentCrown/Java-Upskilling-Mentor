@@ -1,22 +1,19 @@
 package org.example.entities;
 
-import org.example.spring.configs.Config;
 import org.springframework.stereotype.Service;
 
 @Service
 public class Report {
     private int total;
     private int answered;
-    private float passing_score;
+    private int skipped;
+    private float passing_score = 70;
     private Status status;
-    private Config config;
 
     public Report(){
         total = 0;
         answered = 0;
         status = Status.FAILED;
-        config = new Config();
-        passing_score = config.getPass_border();
     }
 
     public void setTotal(Integer total) {
@@ -27,7 +24,7 @@ public class Report {
         this.answered = answered;
     }
 
-    public void setPassing_score(float passing_score) { this.passing_score = passing_score; }
+    public void setSkipped(int skipped) { this.skipped = skipped; }
 
     public void setStatus(Status status) {
         this.status = status;
@@ -35,20 +32,22 @@ public class Report {
 
     public void reset(){
         total = 0;
+        skipped = 0;
         answered = 0;
         status = null;
     }
 
     public void process(){
-        float result = ((float) answered / (float) total) * 100;
+        float result = ( (float) (answered) / (float) total) * 100;
         if (result >= passing_score) setStatus(Status.PASSED);
     }
 
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder();
-        string.append("Answered " + answered + " from " + total + "\n");
-        string.append("Test is " + ((status==Status.PASSED)?"Passed":"Failed") + "\n");
+        string.append("Answered correclty: ").append(answered).append(" / ").append(total).append("\n");
+        string.append("Skipped: ").append(skipped).append(" / ").append(total).append("\n");
+        string.append("Result: ").append((status == Status.PASSED) ? "PASSED" : "FAILED").append("\n");
         return string.toString();
     }
 }

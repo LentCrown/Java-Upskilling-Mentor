@@ -1,38 +1,35 @@
-package org.example.launcher;
+package org.example;
 
+import org.example.entities.Answer;
 import org.example.entities.Question;
 import org.example.entities.Report;
 import org.example.entities.User;
-import org.example.entities.data.CSV;
-import org.example.spring.configs.Config;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+import org.example.dao.CSVFile;
+import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-@Service
-@PropertySource("classpath:prod.properties")
+@Controller
 public class App {
-    private String source;
-    private CSV csv;
+    private String source = "Geography_Oceans&Seas.csv";
+    private CSVFile csvFile;
     private User user;
-    private Config config;
 
     public App(){
-        csv = new CSV();
+        csvFile = new CSVFile();
         user = new User();
-        config = new Config();
-        source = config.getPath();
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public void run() {
         String input;
         Report report = user.getReport();
-        List<String> answers = new ArrayList<>();
-        List<Question> questionList = csv.getQuestions(source);
+        List<Question> questionList = csvFile.getQuestions(source);
+        List<Answer> answerList = csvFile.getAnswers(source);
         Scanner scan = new Scanner(System.in);
         while (true) {
             System.out.println("Welcome to questionnaire application!\n" +
@@ -42,7 +39,7 @@ public class App {
 
             input = scan.nextLine();
             if (input.equals("quit")) break;
-            int answered = 0;
+            int question_number = 0, skipped = 0, answered = 0;
             user.reset(input);
             report.setTotal(questionList.size());
 
@@ -51,12 +48,22 @@ public class App {
             System.out.println("###" + source + "###");
 
             for (Question question : questionList) {
+                Answer answer = answerList.get(question_number);
                 System.out.print(question.toString() + "> ");
                 input = scan.nextLine();
-                if (!input.isEmpty()) answered++;
-                answers.add(input);
+                if (answer.getId() == question_number++){
+                    if (input.isEmpty()){
+                        answer.setAnswer("--skipped by user--");
+                        skipped++;
+                    }
+                    else {
+                        answer.setAnswer(input);
+                        if (answer.getRight_answer().equals(input)) answered++;
+                    }
+                }
             }
             report.setAnswered(answered);
+            report.setSkipped(skipped);
             report.process();
             System.out.println(user.toString());
         }

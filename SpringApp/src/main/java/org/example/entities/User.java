@@ -29,7 +29,7 @@ public class User {
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder();
-        string.append("\nUSER: " + name + "\n");
+        string.append("\nUSER: ").append(name).append("\n");
         string.append(report.toString());
         return string.toString();
     }

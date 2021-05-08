@@ -1,0 +1,5 @@
+questionnaire:
+  separator: ;
+  ignore_quatations: false
+  path: History.csv
+  pass_border: 70
