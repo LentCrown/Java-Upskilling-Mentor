@@ -1,5 +1,7 @@
 package org.example.entities;
 
+import org.example.App;
+import org.example.config.AppConfig;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -8,9 +10,9 @@ public class User {
     private Report report;
     //TODO: Коллекция отчетов?
 
-    public User() {
+    public User(Report report, AppConfig appConfig) {
         name = null;
-        report = new Report();
+        this.report = report;
     }
 
     public void setReport(Report report){

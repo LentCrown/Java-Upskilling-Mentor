@@ -1,19 +1,24 @@
 package org.example.entities;
 
+import org.example.config.AppConfig;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+@Component
 public class Report {
     private int total;
     private int answered;
     private int skipped;
-    private float passing_score = 70;
+    private float passing_score;
     private Status status;
+    private AppConfig appConfig;
 
-    public Report(){
+    public Report(AppConfig appConfig){
         total = 0;
         answered = 0;
         status = Status.FAILED;
+        this.appConfig = appConfig;
     }
 
     public void setTotal(Integer total) {
@@ -45,7 +50,7 @@ public class Report {
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder();
-        string.append("Answered correclty: ").append(answered).append(" / ").append(total).append("\n");
+        string.append("Answered correctly: ").append(answered).append(" / ").append(total).append("\n");
         string.append("Skipped: ").append(skipped).append(" / ").append(total).append("\n");
         string.append("Result: ").append((status == Status.PASSED) ? "PASSED" : "FAILED").append("\n");
         return string.toString();

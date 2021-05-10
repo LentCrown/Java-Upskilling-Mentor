@@ -1,31 +1,31 @@
 package org.example;
 
+import org.example.config.AppConfig;
 import org.example.entities.Answer;
 import org.example.entities.Question;
 import org.example.entities.Report;
 import org.example.entities.User;
 import org.example.dao.CSVFile;
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Scanner;
 
-@Controller
+@Component
 public class App {
-    private String source = "Geography_Oceans&Seas.csv";
+    private String source;
     private CSVFile csvFile;
     private User user;
+    private AppConfig appConfig;
 
-    public App(){
-        csvFile = new CSVFile();
-        user = new User();
+    public App(CSVFile csvFile, User user, AppConfig appConfig){
+        this.csvFile = csvFile;
+        this.user = user;
+        this.appConfig = appConfig;
     }
 
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public void run() {
+    public void start() {
         String input;
         Report report = user.getReport();
         List<Question> questionList = csvFile.getQuestions(source);

@@ -1,5 +1,9 @@
-questionnaire:
+logging:
+  level:
+    root: ERROR
+
+application:
+  source: Geography_Oceans&Seas.csv
   separator: ;
   ignore_quatations: false
-  path: History.csv
   pass_border: 70
