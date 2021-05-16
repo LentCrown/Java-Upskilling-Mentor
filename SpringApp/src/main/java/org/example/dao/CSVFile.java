@@ -16,8 +16,8 @@ import java.util.*;
 
 @Component
 public class CSVFile implements QuestionsDao {
-    private char separator;
-    private boolean ignore_quotations;
+    private char separator = ';';
+    private boolean ignore_quotations = false;
     private Reader reader;
     private CSVReader csvReader;
     private AppConfig appConfig;
