@@ -5,5 +5,5 @@ logging:
 application:
   source: Geography_Oceans&Seas.csv
   separator: ;
-  ignore_quatations: false
+  ignore_quotations: false
   pass_border: 70
