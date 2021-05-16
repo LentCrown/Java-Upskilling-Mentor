@@ -10,15 +10,13 @@ public class Report {
     private int total;
     private int answered;
     private int skipped;
-    private float passing_score;
+    private float passing_score = 70;
     private Status status;
-    private AppConfig appConfig;
 
-    public Report(AppConfig appConfig){
+    public Report(){
         total = 0;
         answered = 0;
         status = Status.FAILED;
-        this.appConfig = appConfig;
     }
 
     public void setTotal(Integer total) {

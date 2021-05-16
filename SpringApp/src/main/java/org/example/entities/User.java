@@ -10,12 +10,8 @@ public class User {
     private Report report;
     //TODO: Коллекция отчетов?
 
-    public User(Report report, AppConfig appConfig) {
+    public User(Report report) {
         name = null;
-        this.report = report;
-    }
-
-    public void setReport(Report report){
         this.report = report;
     }
 

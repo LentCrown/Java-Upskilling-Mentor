@@ -1,6 +1,6 @@
 package org.example.entities;
 
-public class Question implements Comparable<Question> {
+public class Question {
     private final Integer id;
     private final String title;
 
@@ -8,10 +8,6 @@ public class Question implements Comparable<Question> {
         this.id = id;
         this.title = title;
     }
-
-    public int getId() {return id;}
-
-    public String getTitle() {return title;}
 
     public boolean equals(Object object){
         if (this==object) return true;
@@ -30,15 +26,6 @@ public class Question implements Comparable<Question> {
         int result = 1;
         result = shift * result + id.hashCode();
         result = shift * result + title.hashCode();
-        return result;
-    }
-
-    @Override
-    public int compareTo(Question question){
-        int result = this.id.compareTo(question.id);
-        if (result == 0){
-            result = this.title.compareTo(question.title);
-        }
         return result;
     }
 

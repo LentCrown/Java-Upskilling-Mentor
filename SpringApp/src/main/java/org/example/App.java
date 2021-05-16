@@ -6,15 +6,14 @@ import org.example.entities.Question;
 import org.example.entities.Report;
 import org.example.entities.User;
 import org.example.dao.CSVFile;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Scanner;
 
-@Component
+@Service
 public class App {
-    private String source;
+    private String source = "Geography_Oceans&Seas.csv";
     private CSVFile csvFile;
     private User user;
     private AppConfig appConfig;
