@@ -2,6 +2,7 @@ package org.mentor.service;
 
 import org.mentor.config.SourcePathConfig;
 import org.mentor.dao.CSVFile;
+import org.mentor.dao.QuestionDAO;
 import org.mentor.entity.Answer;
 import org.mentor.entity.Question;
 import org.mentor.entity.Report;
@@ -13,12 +14,12 @@ import java.util.Scanner;
 
 @Service
 public class Application {
-    private CSVFile csvFile;
+    private QuestionDAO questionDAO;
     private User user;
     private SourcePathConfig sourcePathConfig;
 
     public Application(CSVFile csvFile, User user, SourcePathConfig sourcePathConfig){
-        this.csvFile = csvFile;
+        this.questionDAO = csvFile;
         this.user = user;
         this.sourcePathConfig = sourcePathConfig;
     }
@@ -26,8 +27,8 @@ public class Application {
     public void run() {
         String input, source = sourcePathConfig.getSource();
         Report report = user.getReport();
-        List<Question> questionList = csvFile.getQuestions(source);
-        List<Answer> answerList = csvFile.getAnswers(source);
+        List<Question> questionList = questionDAO.getQuestions(source);
+        List<Answer> answerList = questionDAO.getAnswers(source);
         Scanner scan = new Scanner(System.in);
         while (true) {
             printWelcome();
