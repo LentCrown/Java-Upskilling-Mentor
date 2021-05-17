@@ -1,25 +1,13 @@
-package org.example.entities;
+package org.mentor.entity;
 
-import org.springframework.stereotype.Component;
+public class Question {
+    private final Integer id;
+    private final String title;
 
-@Component
-public class Question implements Comparable<Question> {
-
-    private Integer id;
-    private String title;
-
-    public Question(){
-        this.id = null;
-        this.title = null;
-    }
     public Question(Integer id, String title){
         this.id = id;
         this.title = title;
     }
-
-    public int getId() {return id;}
-
-    public String getTitle() {return title;}
 
     public boolean equals(Object object){
         if (this==object) return true;
@@ -42,17 +30,7 @@ public class Question implements Comparable<Question> {
     }
 
     @Override
-    public int compareTo(Question question){
-        int result = this.id.compareTo(question.id);
-        if (result == 0){
-            result = this.title.compareTo(question.title);
-        }
-        return result;
-    }
-
-    @Override
     public String toString(){
-        return getId() + " " + getTitle();
+        return "Вопрос " + (id + 1) + " : " + title;
     }
-
 }
