@@ -32,6 +32,7 @@ public class Parser {
             }
             column.add(row[column_index]);
         }
+        if (column.size()==0) return null;
         return column;
     }
 }

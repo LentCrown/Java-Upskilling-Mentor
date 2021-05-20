@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
 @ConfigurationProperties(prefix = "test")
-public class CSVConfigTest {
+public class CSVTestConfig {
     private char separator;
     private boolean ignore_quotations;
 }

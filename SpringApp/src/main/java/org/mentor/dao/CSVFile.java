@@ -26,10 +26,35 @@ public class CSVFile implements QuestionDAO {
         this.csvConfig = config;
     }
 
+    @Override
+    public List<Question> getQuestions(String source) {
+        List<String[]> raw = readCSV(source);
+        if (raw == null) return null;
+        int index = 0;
+        List<Question> questionList = new ArrayList<>();
+        List<String> questions = Parser.getColumn(raw,"Question");
+        if (questions == null) return null;
+        questions.remove(0);
+        for(String question: questions){ questionList.add(new Question(index++,question)); }
+        return questionList;
+    }
+
+    @Override
+    public List<Answer> getAnswers(String source) {
+        List<String[]> raw = readCSV(source);
+        if (raw == null) return null;
+        int index = 0;
+        List<Answer> answerList = new ArrayList<>();
+        List<String> answers = Parser.getColumn(raw,"Answer");
+        if (answers == null) return null;
+        answers.remove(0);
+        for(String answer: answers){answerList.add(new Answer(index++,answer));}
+        return answerList;
+    }
+
     public List<String[]> readCSV(String source){
         source = FileReader.getResource(source);
-        if (source==null)
-            return null;
+        if (source==null) return null;
         openFile(source);
         List<String[]> lines = new ArrayList<>();
         try {
@@ -39,31 +64,6 @@ public class CSVFile implements QuestionDAO {
         }
         closeFile();
         return lines;
-    }
-
-    @Override
-    public List<Question> getQuestions(String source) {
-        List<String[]> raw = readCSV(source);
-        int index = 0;
-        List<Question> questionList = new ArrayList<>();
-        List<String> questions = Parser.getColumn(raw,"Question");
-        questions.remove(0);
-        for(String question: questions){
-            questionList.add(new Question(index++,question));
-        }
-        return questionList;
-    }
-
-    @Override
-    public List<Answer> getAnswers(String source) {
-        int index = 0;
-        List<Answer> answerList = new ArrayList<>();
-        List<String> answers = Parser.getColumn(readCSV(source),"Answer");
-        answers.remove(0);
-        for(String answer: answers){
-            answerList.add(new Answer(index++,answer));
-        }
-        return answerList;
     }
 
     private void openFile(String path) {

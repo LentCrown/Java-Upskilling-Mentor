@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
@@ -17,8 +18,7 @@ public class FileReader {
         try {
             return Paths.get(Objects.requireNonNull(ClassLoader.getSystemClassLoader()
                     .getResource(path)).toURI()).toString();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+        } catch (URISyntaxException | NullPointerException e) {
             return null;
         }
     }

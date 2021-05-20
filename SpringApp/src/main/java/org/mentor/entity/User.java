@@ -13,12 +13,13 @@ public class User {
         this.report = report;
     }
 
+    public void setName(String name) { this.name = name;}
     public Report getReport(){
         return report;
     }
 
-    public void reset(String name){
-        this.name = name;
+    public void reset(){
+        this.name = null;
         report.reset();
     }
 

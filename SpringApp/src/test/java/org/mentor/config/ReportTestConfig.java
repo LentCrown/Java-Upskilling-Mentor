@@ -5,6 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
 @ConfigurationProperties(prefix = "test")
-public class SourcePathConfigTest {
-    private String source;
+public class ReportTestConfig {
+    private float pass_border;
 }

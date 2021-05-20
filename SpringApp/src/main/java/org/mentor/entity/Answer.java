@@ -23,6 +23,10 @@ public class Answer {
         return id;
     }
 
+    public boolean isCorrectAnswer(){
+        return right_answer.equals(answer);
+    }
+
     @Override
     public String toString() {
         return "Answer{" + "id=" + id +", answer='" + answer + '\'' +", right_answer='" + right_answer + '\'' +'}';
