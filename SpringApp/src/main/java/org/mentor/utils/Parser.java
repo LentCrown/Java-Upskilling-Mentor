@@ -4,11 +4,13 @@ import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
+import org.springframework.stereotype.Component;
 
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class Parser {
 
     public static CSVReader getCsvReader(Reader reader, char separator, boolean ignore_quotations){
