@@ -35,7 +35,7 @@ public class Report {
 
     @Override
     public String toString() {
-        DateFormat dateFormat = new SimpleDateFormat(ConstantValues.REGEX_DATE);
+        DateFormat dateFormat = new SimpleDateFormat(ConstantValues.PATTERN_DATE);
         return "Date: " + dateFormat.format(date) + "\n" +
                "Answered correctly: " + answered + " / " + total + "\n" +
                "Skipped: " + skipped + " / " + total + "\n" +

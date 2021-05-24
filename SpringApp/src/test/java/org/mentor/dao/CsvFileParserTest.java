@@ -2,8 +2,6 @@ package org.mentor.dao;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.runner.RunWith;
 import org.mentor.config.CSVConfig;
 import org.mentor.domain.Question;
@@ -16,7 +14,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
-@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class CsvFileParserTest {
     private final String RESOURCE_FILE = "Example1.csv";
     private final String WRONG_PATH = "Example123.csv";

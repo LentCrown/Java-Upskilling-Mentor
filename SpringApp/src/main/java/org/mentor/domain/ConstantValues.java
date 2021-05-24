@@ -7,5 +7,5 @@ public final class ConstantValues {
     public static final String REGEX_WORDS = "^[^\\s]*$";
     public static final String REGEX_QUESTIONS = "^(\n){0,1}[\\sа-яА-я0-9]*$";
     public static final String REGEX_QUESTIONS_WITH_CHOICE = "^(\n||[1-4]){0,1}$";
-    public static final String REGEX_DATE = "yyyy-MM-dd HH:mm:ss";
+    public static final String PATTERN_DATE = "yyyy-MM-dd HH:mm:ss";
 }

@@ -1,5 +1,7 @@
 package org.mentor.domain;
 
+import java.util.Objects;
+
 public class Answer {
     private String answer;
 
@@ -10,17 +12,18 @@ public class Answer {
     public String getAnswer(){return answer;}
 
     @Override
-    public int hashCode() {
-        return super.hashCode();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Answer answer1 = (Answer) o;
+
+        return answer.equals(answer1.answer);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (obj == this) return true;
-        if (!(obj instanceof Answer)) return false;
-        Answer compareTo = (Answer) obj;
-        return this.answer.equals(compareTo.getAnswer());
+    public int hashCode() {
+        return answer.hashCode();
     }
 
     @Override
