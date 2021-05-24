@@ -1,38 +1,32 @@
 package org.mentor.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Question {
-    private final Integer id;
+    private static int count_instance = 1;
+    private final int id;
     private final String title;
+    private final List<Answer> answerList;
+    private final Answer correct_answer;
 
-    public Question(Integer id, String title){
-        this.id = id;
+    public Question(String title, Answer correct_answer){
+        this.id = count_instance++;
         this.title = title;
+        answerList = new ArrayList<>();
+        this.correct_answer = correct_answer;
     }
 
-    public String getTitle() {return title;}
+    public List<Answer> getAnswerList() {
+        return answerList;
+    }
 
-    public boolean equals(Object object){
-        if (this==object) return true;
-        if (object == null || getClass()!= object.getClass()) return false;
-        if (object instanceof Question){
-            Question question = (Question) object;
-            return (id.equals(question.id)
-                    && title.equals(question.title));
-        }
-        return false;
+    public Answer getCorrect_answer() {
+        return correct_answer;
     }
 
     @Override
-    public int hashCode(){
-        final int shift = 31;
-        int result = 1;
-        result = shift * result + id.hashCode();
-        result = shift * result + title.hashCode();
-        return result;
-    }
-
-    @Override
-    public String toString(){
-        return "Вопрос " + (id + 1) + " : " + title;
+    public String toString() {
+        return "Вопрос " + id + " : " + title + ((answerList.isEmpty())? "" : answerList.toString());
     }
 }

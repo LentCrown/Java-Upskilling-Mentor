@@ -1,34 +1,25 @@
 package org.mentor.entity;
 
 public class Answer {
-    private final Integer id;
     private String answer;
-    private final String right_answer;
 
-    public Answer(Integer id, String right_answer) {
-        this.id = id;
-        this.answer = null;
-        this.right_answer = right_answer;
-    }
-
-    public void setAnswer(String answer) {
+    public Answer(String answer) {
         this.answer = answer;
     }
 
-    public String getRight_answer() {
-        return right_answer;
-    }
+    public String getAnswer(){return answer;}
 
-    public Integer getId() {
-        return id;
-    }
-
-    public boolean isCorrectAnswer(){
-        return right_answer.equals(answer);
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     @Override
-    public String toString() {
-        return "Answer{" + "id=" + id +", answer='" + answer + '\'' +", right_answer='" + right_answer + '\'' +'}';
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj == this) return true;
+        if (!(obj instanceof Answer)) return false;
+        Answer compareTo = (Answer) obj;
+        return this.answer.equals(compareTo.getAnswer());
     }
 }

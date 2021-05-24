@@ -1,12 +1,9 @@
 package org.mentor.service;
 
+import org.mentor.config.ReportConfig;
 import org.mentor.config.SourcePathConfig;
-import org.mentor.dao.CSVFile;
-import org.mentor.dao.QuestionDAO;
-import org.mentor.entity.Answer;
-import org.mentor.entity.Question;
-import org.mentor.entity.Report;
-import org.mentor.entity.User;
+import org.mentor.dao.QuestionDao;
+import org.mentor.entity.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,82 +13,128 @@ import java.util.Scanner;
 @Service
 public class Application {
     private SourcePathConfig sourcePathConfig;
-    private QuestionDAO questionDAO;
+    private ReportConfig reportConfig;
+    private QuestionDao questionDao;
     private User user;
-    private List<String> userInputList;
+    private List<Answer> userAnswerList;
 
-    public Application(SourcePathConfig sourcePathConfig, QuestionDAO questionDAO, User user){
+    public Application(SourcePathConfig sourcePathConfig, ReportConfig reportConfig, QuestionDao questionDao, User user){
         this.sourcePathConfig = sourcePathConfig;
-        this.questionDAO = questionDAO;
+        this.reportConfig = reportConfig;
+        this.questionDao = questionDao;
         this.user = user;
-        userInputList = new ArrayList<>();
+        userAnswerList = new ArrayList<>();
     }
 
     public void run() {
-        String input;
+        boolean keepSameUser;
+        Report.setPass_border(reportConfig.getPass_border());
+        List<Question> questionList = questionDao.findAll(sourcePathConfig.getSource());
+        if (questionList==null) return;
         while (true) {
-            input = printWelcome();
-            if (input.equals("quit")) break;
-            user.setName(input);
-            printBeforeQuestions(input);
-            processInput();
-            System.out.println("###" + sourcePathConfig.getSource() + "###");
-            processResults();
-            user.reset();
-            userInputList.clear();
+            keepSameUser = true;
+            showMenu();
+            if (enterUserCredentials()) break;
+            while (keepSameUser){
+                printBeforeQuestions();
+                processInput(questionList);
+                processResults(questionList);
+                keepSameUser = askUserForNewSurvey();
+            }
         }
     }
 
-    private void processInput(){
-        String input;
+    private void processInput(List<Question> questionList){
+        String answer, regex = ConstantValues.REGEX_QUESTIONS_WITH_CHOICE;
         Scanner scan = new Scanner(System.in);
-        List<Question> questionList = questionDAO.getQuestions(sourcePathConfig.getSource());
         for (Question question : questionList) {
-            System.out.print(question.toString() + "> ");
-            input = scan.nextLine();
-            userInputList.add(input);
+            if (question.getAnswerList().isEmpty()){
+                regex = ConstantValues.REGEX_QUESTIONS;
+            }
+            while (true){
+                System.out.print(question.toString() + "> ");
+                answer = scan.nextLine();
+                if (!answer.matches(regex)) continue;
+                userAnswerList.add(new Answer(answer));
+                break;
+            }
         }
     }
 
-    private void processResults(){
-        List<Answer> answerList = questionDAO.getAnswers(sourcePathConfig.getSource());
-        Report report = user.getReport();
-        report.setTotal(userInputList.size());
+    private void processResults(List<Question> questionList){
+        int total = questionList.size(), index, answered, skipped;
+        index = answered = skipped = 0;
+        List<Report> reportList = user.getReportList();
+        for (Answer userAnswer : userAnswerList) {
+            Answer correct_answer = questionList.get(index++).getCorrect_answer();
+            if (userAnswer.getAnswer().isEmpty()){
+                skipped++;
+            }
+            else {
+                if (userAnswer.equals(correct_answer)) answered++;
+            }
+        }
+        Report report = new Report(total,answered,skipped);
+        report.process();
+        reportList.add(report);
+        System.out.println(user.toString());
+        userAnswerList.clear();
+    }
 
-        int question_number, answered, skipped;
-        question_number = answered = skipped = 0;
-        for (String userInput : userInputList) {
-            Answer answer = answerList.get(question_number);
-            if (answer.getId() == question_number++){
-                if (userInput.isEmpty()){
-                    answer.setAnswer("--skipped by user--");
-                    skipped++;
-                }
-                else {
-                    answer.setAnswer(userInput);
-                    if (answer.isCorrectAnswer()) answered++;
+    private void showMenu(){
+        System.out.println("Welcome to survey application!\n" +
+                "You will answer on questions lists. " +
+                "Register yourself or type 'quit' to close this app");
+    }
+
+    private boolean enterUserCredentials(){
+        Scanner scan = new Scanner(System.in);
+        while (true) {
+            System.out.print("name> ");
+            String name = scan.nextLine();
+            if (name.matches(ConstantValues.REGEX_QUIT)) return true;
+            if (name.matches(ConstantValues.REGEX_WORDS)) {
+                user.setName(name);
+                break;
+            }
+            System.out.println("Wrong name format, try again..");
+        }
+        while (true){
+            System.out.print("surname> ");
+            String surname = scan.nextLine();
+            if (surname.matches(ConstantValues.REGEX_QUIT)) return true;
+            if (surname.matches(ConstantValues.REGEX_WORDS)) {
+                user.setSurname(surname);
+                break;
+            }
+            System.out.println("Wrong surname format, try again..");
+        }
+        return false;
+    }
+
+    private void printBeforeQuestions(){
+        System.out.println();
+        System.out.println(user.getSurname()+" "+user.getName()+", prepare to answer on survey ("
+                +sourcePathConfig.getSource()+")...");
+    }
+
+    private boolean askUserForNewSurvey(){
+        Scanner scan = new Scanner(System.in);
+        while(true) {
+            System.out.println("Do you want to continue as " + user.getSurname() + " " + user.getName() + "? (y/n)");
+            System.out.print("cmd>");
+            String command = scan.nextLine();
+            if (!command.matches(ConstantValues.REGEX_YES) && !command.matches(ConstantValues.REGEX_NO))
+                System.out.println("Wrong input, try again..");
+            else {
+                if (command.matches(ConstantValues.REGEX_YES)) return true;
+                if (command.matches(ConstantValues.REGEX_NO)){
+                    user.getReportList().clear();
+                    user.setName("");
+                    user.setSurname("");
+                    return false;
                 }
             }
         }
-
-        report.setAnswered(answered);
-        report.setSkipped(skipped);
-        report.process();
-        System.out.println(user.toString());
     }
-
-    private String printWelcome(){
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Welcome to questionnaire application!\n" +
-                "You will answer on questions lists. " +
-                "Enter your name or type 'quit' to close application");
-        System.out.print("name> ");
-        return scan.nextLine();
-    }
-
-    private void printBeforeQuestions(String name){
-        System.out.println();
-        System.out.println("Welcome, " + name +"! Prepare to answer on some questions...");
-    }
-
 }

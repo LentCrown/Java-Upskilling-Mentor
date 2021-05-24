@@ -1,53 +1,44 @@
 package org.mentor.entity;
 
-import org.mentor.config.ReportConfig;
-import org.springframework.stereotype.Component;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-@Component
 public class Report {
+    private static int instance_counter = 1;
+    private static float pass_border;
+
+    private int id;
+    private Date date;
     private int total;
     private int answered;
     private int skipped;
     private Status status;
-    private ReportConfig reportConfig;
 
-    public Report(ReportConfig reportConfig){
-        total = 0;
-        answered = 0;
-        status = Status.FAILED;
-        this.reportConfig = reportConfig;
-    }
-
-    public void setTotal(Integer total) {
+    public Report(int total, int answered, int skipped){
+        this.id = instance_counter++;
+        this.date = new Date();
         this.total = total;
-    }
-
-    public void setAnswered(Integer answered) {
         this.answered = answered;
+        this.skipped = skipped;
+        status = Status.FAILED;
+
     }
-
-    public void setSkipped(int skipped) { this.skipped = skipped; }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public void reset(){
-        total = 0;
-        skipped = 0;
-        answered = 0;
-        status = null;
+    public static void setPass_border(float pass_border) {
+        Report.pass_border = pass_border;
     }
 
     public void process(){
         float result = ( (float) (answered) / (float) total) * 100;
-        if (result >= reportConfig.getPass_border()) setStatus(Status.PASSED);
+        if (result >= pass_border) status = Status.PASSED;
     }
 
     @Override
     public String toString() {
-        return "Answered correctly: " + answered + " / " + total + "\n" +
-                "Skipped: " + skipped + " / " + total + "\n" +
-                "Result: " + ((status == Status.PASSED) ? "PASSED" : "FAILED") + "\n";
+        DateFormat dateFormat = new SimpleDateFormat(ConstantValues.REGEX_DATE);
+        return "Date: " + dateFormat.format(date) + "\n" +
+               "Answered correctly: " + answered + " / " + total + "\n" +
+               "Skipped: " + skipped + " / " + total + "\n" +
+               "Result: " + ((status == Status.PASSED) ? "PASSED" : "FAILED") + "\n";
     }
 }
