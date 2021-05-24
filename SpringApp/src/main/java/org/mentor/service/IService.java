@@ -1,5 +1,5 @@
 package org.mentor.service;
 
-public interface CustomService {
+public interface IService {
     void run();
 }

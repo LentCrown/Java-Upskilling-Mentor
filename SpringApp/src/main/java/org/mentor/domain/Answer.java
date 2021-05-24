@@ -22,4 +22,9 @@ public class Answer {
         Answer compareTo = (Answer) obj;
         return this.answer.equals(compareTo.getAnswer());
     }
+
+    @Override
+    public String toString() {
+        return answer;
+    }
 }

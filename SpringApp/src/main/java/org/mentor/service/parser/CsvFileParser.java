@@ -46,7 +46,7 @@ public class CsvFileParser {
                 .peek((i -> {
                     if(line[i].isEmpty()) no_choices.set(true);
                 })).forEach(i -> {
-                    if (!no_choices.get()) question.getAnswerList().add(new Answer(line[i]));
+                    if (!no_choices.get()) question.getChoiceList().add(new Answer(line[i]));
                 });
     }
 

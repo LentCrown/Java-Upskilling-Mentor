@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Scanner;
 
 @Service
-public class SurveyService implements CustomService{
+public class SurveyService implements IService {
     private SourcePathConfig sourcePathConfig;
     private ReportConfig reportConfig;
     private QuestionDao questionDao;
@@ -49,7 +49,7 @@ public class SurveyService implements CustomService{
         String answer, regex = ConstantValues.REGEX_QUESTIONS_WITH_CHOICE;
         Scanner scan = new Scanner(System.in);
         for (Question question : questionList) {
-            if (question.getAnswerList().isEmpty()){
+            if (question.getChoiceList().isEmpty()){
                 regex = ConstantValues.REGEX_QUESTIONS;
             }
             while (true){
@@ -70,10 +70,9 @@ public class SurveyService implements CustomService{
             Answer correct_answer = questionList.get(index++).getCorrect_answer();
             if (userAnswer.getAnswer().isEmpty()){
                 skipped++;
+                continue;
             }
-            else {
-                if (userAnswer.equals(correct_answer)) answered++;
-            }
+            if (userAnswer.equals(correct_answer)) answered++;
         }
         Report report = new Report(total,answered,skipped);
         report.process();
