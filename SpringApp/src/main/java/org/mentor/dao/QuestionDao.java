@@ -1,7 +1,6 @@
 package org.mentor.dao;
 
-import org.mentor.entity.Answer;
-import org.mentor.entity.Question;
+import org.mentor.domain.Question;
 
 import java.util.List;
 

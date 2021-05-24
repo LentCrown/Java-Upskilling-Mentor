@@ -1,6 +1,6 @@
 package org.mentor.dao;
 
-import org.mentor.entity.Question;
+import org.mentor.domain.Question;
 import org.mentor.service.parser.CsvFileParser;
 import org.springframework.stereotype.Repository;
 

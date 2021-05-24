@@ -3,7 +3,7 @@ package org.mentor.service;
 import org.mentor.config.ReportConfig;
 import org.mentor.config.SourcePathConfig;
 import org.mentor.dao.QuestionDao;
-import org.mentor.entity.*;
+import org.mentor.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.Scanner;
 
 @Service
-public class Application {
+public class SurveyService implements CustomService{
     private SourcePathConfig sourcePathConfig;
     private ReportConfig reportConfig;
     private QuestionDao questionDao;
     private User user;
     private List<Answer> userAnswerList;
 
-    public Application(SourcePathConfig sourcePathConfig, ReportConfig reportConfig, QuestionDao questionDao, User user){
+    public SurveyService(SourcePathConfig sourcePathConfig, ReportConfig reportConfig, QuestionDao questionDao, User user){
         this.sourcePathConfig = sourcePathConfig;
         this.reportConfig = reportConfig;
         this.questionDao = questionDao;
@@ -26,6 +26,7 @@ public class Application {
         userAnswerList = new ArrayList<>();
     }
 
+    @Override
     public void run() {
         boolean keepSameUser;
         Report.setPass_border(reportConfig.getPass_border());

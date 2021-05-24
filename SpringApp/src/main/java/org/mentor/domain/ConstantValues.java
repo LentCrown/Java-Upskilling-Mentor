@@ -1,4 +1,4 @@
-package org.mentor.entity;
+package org.mentor.domain;
 
 public final class ConstantValues {
     public static final String REGEX_YES = "^[Yy]([Ee][Ss]){0,1}$";

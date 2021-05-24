@@ -5,8 +5,8 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 import org.mentor.config.CSVConfig;
-import org.mentor.entity.Answer;
-import org.mentor.entity.Question;
+import org.mentor.domain.Answer;
+import org.mentor.domain.Question;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 

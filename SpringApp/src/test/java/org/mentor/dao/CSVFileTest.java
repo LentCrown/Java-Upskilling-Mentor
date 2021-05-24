@@ -2,16 +2,10 @@ package org.mentor.dao;
 
 import org.junit.Test;
 import org.mentor.config.CSVConfig;
-import org.mentor.entity.Answer;
-import org.mentor.entity.Question;
 import org.mentor.service.parser.CsvFileParser;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 
 public class CSVFileTest {
     private final String RESOURCE_FILE = "Example1.csv";

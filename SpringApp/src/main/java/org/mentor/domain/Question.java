@@ -1,4 +1,4 @@
-package org.mentor.entity;
+package org.mentor.domain;
 
 import java.util.ArrayList;
 import java.util.List;

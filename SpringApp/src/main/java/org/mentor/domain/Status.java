@@ -1,4 +1,4 @@
-package org.mentor.entity;
+package org.mentor.domain;
 
 public enum Status {
     FAILED,
