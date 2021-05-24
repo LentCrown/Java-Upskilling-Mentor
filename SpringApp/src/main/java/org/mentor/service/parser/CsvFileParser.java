@@ -21,14 +21,14 @@ import java.util.stream.IntStream;
 public class CsvFileParser {
     private CSVConfig csvConfig;
 
-    CsvFileParser(CSVConfig config){
+    public CsvFileParser(CSVConfig config){
         this.csvConfig = config;
     }
 
     public List<Question> findAll(String source) {
         List<String[]> rawLines = readRawLinesFromCsvFile(source);
-        if(rawLines.get(0).length<6){
-            System.out.println("Error with reading '" + source + ".csv' file. Check it for right format...");
+        if(rawLines == null || rawLines.get(0).length<6){
+            System.out.println("Error with reading '" + source + ".csv' file. Check file or format..");
             return null;
         }
         List<Question> questionList = new ArrayList<>();
@@ -50,7 +50,7 @@ public class CsvFileParser {
                 });
     }
 
-    public List<String[]> readRawLinesFromCsvFile(String source){
+    private List<String[]> readRawLinesFromCsvFile(String source){
         ClassPathResource csvResource = new ClassPathResource(source);
         if (csvResource.exists()) {
             try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(csvResource.getInputStream()))
