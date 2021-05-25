@@ -1,16 +1,16 @@
 package org.mentor.dao;
 
 import org.mentor.domain.Question;
-import org.mentor.service.parser.CsvFileParser;
+import org.mentor.service.ICsvParser;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public class QuestionCsvDao implements QuestionDao {
-    CsvFileParser csvFileParser;
+    private final ICsvParser csvFileParser;
 
-    public QuestionCsvDao(CsvFileParser csvFileParser){
+    public QuestionCsvDao(ICsvParser csvFileParser){
         this.csvFileParser = csvFileParser;
     }
 

@@ -6,24 +6,26 @@ import org.mentor.dao.QuestionDao;
 import org.mentor.domain.*;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 @Service
 public class SurveyService implements IService {
-    private SourcePathConfig sourcePathConfig;
-    private ReportConfig reportConfig;
-    private QuestionDao questionDao;
-    private User user;
-    private List<Answer> userAnswerList;
+    private final SourcePathConfig sourcePathConfig;
+    private final ReportConfig reportConfig;
+    private final QuestionDao questionDao;
+    private final List<Answer> userAnswerList;
+    private final List<Report> reportList;
+    private String userSurname;
+    private String userName;
 
-    public SurveyService(SourcePathConfig sourcePathConfig, ReportConfig reportConfig, QuestionDao questionDao, User user){
+    public SurveyService(SourcePathConfig sourcePathConfig, ReportConfig reportConfig, QuestionDao questionDao){
         this.sourcePathConfig = sourcePathConfig;
         this.reportConfig = reportConfig;
         this.questionDao = questionDao;
-        this.user = user;
         userAnswerList = new ArrayList<>();
+        reportList = new ArrayList<>();
+        userSurname = "";
+        userName = "";
     }
 
     @Override
@@ -65,7 +67,6 @@ public class SurveyService implements IService {
     private void processResults(List<Question> questionList){
         int total = questionList.size(), index, answered, skipped;
         index = answered = skipped = 0;
-        List<Report> reportList = user.getReportList();
         for (Answer userAnswer : userAnswerList) {
             Answer correct_answer = questionList.get(index++).getCorrect_answer();
             if (userAnswer.getAnswer().isEmpty()){
@@ -74,11 +75,7 @@ public class SurveyService implements IService {
             }
             if (userAnswer.equals(correct_answer)) answered++;
         }
-        Report report = new Report(total,answered,skipped);
-        report.process();
-        reportList.add(report);
-        System.out.println(user.toString());
-        userAnswerList.clear();
+        printResults(total,answered, skipped);
     }
 
     private void showMenu(){
@@ -88,23 +85,24 @@ public class SurveyService implements IService {
     }
 
     private boolean enterUserCredentials(){
+        String input;
         Scanner scan = new Scanner(System.in);
         while (true) {
             System.out.print("name> ");
-            String name = scan.nextLine();
-            if (name.matches(ConstantValues.REGEX_QUIT)) return true;
-            if (name.matches(ConstantValues.REGEX_WORDS)) {
-                user.setName(name);
+            input = scan.nextLine();
+            if (input.matches(ConstantValues.REGEX_QUIT)) return true;
+            if (input.matches(ConstantValues.REGEX_WORDS)) {
+                userName = input;
                 break;
             }
             System.out.println("Wrong name format, try again..");
         }
         while (true){
             System.out.print("surname> ");
-            String surname = scan.nextLine();
-            if (surname.matches(ConstantValues.REGEX_QUIT)) return true;
-            if (surname.matches(ConstantValues.REGEX_WORDS)) {
-                user.setSurname(surname);
+            input = scan.nextLine();
+            if (input.matches(ConstantValues.REGEX_QUIT)) return true;
+            if (input.matches(ConstantValues.REGEX_WORDS)) {
+                userSurname = input;
                 break;
             }
             System.out.println("Wrong surname format, try again..");
@@ -114,14 +112,14 @@ public class SurveyService implements IService {
 
     private void printBeforeQuestions(){
         System.out.println();
-        System.out.println(user.getSurname()+" "+user.getName()+", prepare to answer on survey ("
+        System.out.println(userSurname +" "+ userName +", prepare to answer on survey ("
                 +sourcePathConfig.getSource()+")...");
     }
 
     private boolean askUserForNewSurvey(){
         Scanner scan = new Scanner(System.in);
         while(true) {
-            System.out.println("Do you want to continue as " + user.getSurname() + " " + user.getName() + "? (y/n)");
+            System.out.println("Do you want to continue as " + userSurname + " " + userName + "? (y/n)");
             System.out.print("cmd>");
             String command = scan.nextLine();
             if (!command.matches(ConstantValues.REGEX_YES) && !command.matches(ConstantValues.REGEX_NO))
@@ -129,12 +127,27 @@ public class SurveyService implements IService {
             else {
                 if (command.matches(ConstantValues.REGEX_YES)) return true;
                 if (command.matches(ConstantValues.REGEX_NO)){
-                    user.getReportList().clear();
-                    user.setName("");
-                    user.setSurname("");
+                    reportList.clear();
+                    userName = userSurname = "";
+                    System.out.println();
                     return false;
                 }
             }
         }
+    }
+
+    private void printResults(int total, int answered, int skipped){
+        userAnswerList.clear();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        reportList.add(new Report(total,answered,skipped));
+        reportList.forEach(report -> stringBuilder.append(report.toString()).append("\n"));
+        stringBuilder.deleteCharAt(stringBuilder.length()-1);
+        System.out.println(
+                "**************************" + "\n" +
+                "User: " + userSurname + " " + userName + "\n" +
+                "**************************" + "\n" +
+                stringBuilder.toString() +
+                "**************************" + "\n");
     }
 }

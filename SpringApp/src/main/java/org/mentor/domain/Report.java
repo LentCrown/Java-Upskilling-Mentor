@@ -21,16 +21,17 @@ public class Report {
         this.total = total;
         this.answered = answered;
         this.skipped = skipped;
-        status = Status.FAILED;
+        status = process();
 
     }
     public static void setPass_border(float pass_border) {
         Report.pass_border = pass_border;
     }
 
-    public void process(){
+    public Status process(){
         float result = ( (float) (answered) / (float) total) * 100;
-        if (result >= pass_border) status = Status.PASSED;
+        if (result >= pass_border) return Status.PASSED;
+        return Status.FAILED;
     }
 
     @Override

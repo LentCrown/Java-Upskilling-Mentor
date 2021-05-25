@@ -35,8 +35,8 @@ public class ConstantValuesTest {
     }
     @Test
     public void ConstantValues_RegexWords(){
-        String[] inputRowSuccess = {"Hello", "my", "name", "is", "Anton", "\n"};
-        String[] inputRowFailure = {"\t",";","Hello my name is Anton", "Text example here", "This is just sample text"};
+        String[] inputRowSuccess = {"Hello", "my", "name", "is", "Anton"};
+        String[] inputRowFailure = {"\t", "\n", " ", ";", "Hello my name is Anton", "Text example here", "This is just sample text"};
         assertThat(Arrays.stream(inputRowSuccess).allMatch(i -> i.matches(REGEX_WORDS))).isTrue();
         assertThat(Arrays.stream(inputRowFailure).allMatch(i -> i.matches(REGEX_WORDS))).isFalse();
     }
@@ -51,7 +51,7 @@ public class ConstantValuesTest {
     public void ConstantValues_RegexQuestionsWithChoice(){
         String[] inputRowSuccess = {"1", "2", "3", "4", "\n"};
         String[] inputRowFailure = {"\t",";","Hello", "my", "name", "is", "Anton", "111", "2021", "Text example here"};
-        assertThat(Arrays.stream(inputRowSuccess).allMatch(i -> i.matches(REGEX_QUESTIONS))).isTrue();
-        assertThat(Arrays.stream(inputRowFailure).allMatch(i -> i.matches(REGEX_QUESTIONS))).isFalse();
+        assertThat(Arrays.stream(inputRowSuccess).allMatch(i -> i.matches(REGEX_QUESTIONS_WITH_CHOICE))).isTrue();
+        assertThat(Arrays.stream(inputRowFailure).allMatch(i -> i.matches(REGEX_QUESTIONS_WITH_CHOICE))).isFalse();
     }
 }
