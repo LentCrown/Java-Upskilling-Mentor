@@ -17,7 +17,7 @@ import java.util.List;
 public class CsvFileReader implements ICsvReader {
     private final CSVConfig csvConfig;
 
-    public CsvFileReader(CSVConfig config){
+    CsvFileReader(CSVConfig config){
         this.csvConfig = config;
     }
 
