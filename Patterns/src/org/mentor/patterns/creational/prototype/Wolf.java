@@ -16,7 +16,7 @@ public class Wolf extends Animal implements Copyable {
 
     @Override
     public Wolf clone() {
-        return (Wolf) new Wolf(this);
+        return new Wolf(this);
     }
 
     @Override
