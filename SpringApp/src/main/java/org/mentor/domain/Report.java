@@ -8,11 +8,11 @@ public class Report {
     private static int instance_counter = 1;
     private static float pass_border;
 
-    private int id;
-    private Date date;
-    private int total;
-    private int answered;
-    private int skipped;
+    private final int id;
+    private final Date date;
+    private final int total;
+    private final int answered;
+    private final int skipped;
     private Status status;
 
     public Report(int total, int answered, int skipped){
