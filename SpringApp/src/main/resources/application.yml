@@ -1,0 +1,9 @@
+logging:
+  level:
+    root: ERROR
+
+application:
+  source: Geography_Oceans&Seas.csv
+  separator: ;
+  ignore_quotations: false
+  pass_border: 70
