@@ -1,5 +1,8 @@
 package org.mentor.service;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class StoreServiceImpl implements StoreService{
     @Override
     public void registerNewProduct() {

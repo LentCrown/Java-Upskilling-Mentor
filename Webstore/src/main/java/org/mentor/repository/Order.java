@@ -1,6 +1,13 @@
 package org.mentor.repository;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class Order {
+    @Id
+    @GeneratedValue
     private Integer id;
     private Integer id_merch;
     private Integer id_client;
