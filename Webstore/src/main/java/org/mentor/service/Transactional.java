@@ -5,4 +5,5 @@ public interface Transactional {
     void commit();
     void rollback();
     void breakConnection();
+    void persist(Object o);
 }
