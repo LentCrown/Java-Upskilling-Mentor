@@ -1,55 +1,30 @@
 package org.mentor.repository;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jdk.jfr.DataAmount;
+import lombok.Data;
 
+import javax.persistence.*;
+
+@Data
 @Entity
+@Table(name="T_ORDER")
 public class Order {
     @Id
-    private Integer id;
-    private Integer id_merch;
-    private Integer id_client;
+    @GeneratedValue(strategy=GenerationType.SEQUENCE,
+            generator = "seq_order")
+    @SequenceGenerator(name = "seq_order")
+    @Column(name = "ID", nullable = false)
+    private Long id;
+    @Column(name = "AMOUNT", nullable = false)
     private Integer howMuchBuying;
+    @Column(name = "PRICE", nullable = false)
     private Double totalPrice;
 
-    public Integer getId() {
-        return id;
-    }
+    @OneToOne
+    @JoinColumn(name="PRODUCT_ID", unique=true, nullable=false)
+    private Product product;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getId_merch() {
-        return id_merch;
-    }
-
-    public void setId_merch(Integer id_merch) {
-        this.id_merch = id_merch;
-    }
-
-    public Integer getId_client() {
-        return id_client;
-    }
-
-    public void setId_client(Integer id_client) {
-        this.id_client = id_client;
-    }
-
-    public Integer getHowMuchBuying() {
-        return howMuchBuying;
-    }
-
-    public void setHowMuchBuying(Integer howMuchBuying) {
-        this.howMuchBuying = howMuchBuying;
-    }
-
-    public Double getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(Double totalPrice) {
-        this.totalPrice = totalPrice;
-    }
+    @OneToOne
+    @JoinColumn(name="CLIENT_ID", unique=true, nullable=false)
+    private Client client;
 }

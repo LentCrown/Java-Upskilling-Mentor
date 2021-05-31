@@ -1,49 +1,23 @@
 package org.mentor.repository;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.GenerationType;
-import javax.persistence.Table;
-import java.io.Serializable;
+import javax.persistence.*;
 
+@Data
 @Entity
-@Table(name="product")
-public class Product implements Serializable {
+@Table(name="PRODUCT")
+public class Product{
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE,
+            generator = "seq_product")
+    @SequenceGenerator(name = "seq_product")
+    @Column(name = "ID", nullable = false)
     private Long id;
+    @Column(name = "DESC", nullable = false)
     private String desc;
+    @Column(name = "PRICE", nullable = false)
     private Double price;
+    @Column(name = "STORED", nullable = false)
     private Integer stored;
-
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Integer getStored() {
-        return stored;
-    }
-    public void setStored(Integer stored) {
-        this.stored = stored;
-    }
 }

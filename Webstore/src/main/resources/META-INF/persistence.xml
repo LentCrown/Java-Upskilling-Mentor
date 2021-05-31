@@ -6,6 +6,8 @@
     <persistence-unit name="webstore.h2">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>org.mentor.repository.Product</class>
+        <class>org.mentor.repository.Order</class>
+        <class>org.mentor.repository.Client</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:testdb"/>
