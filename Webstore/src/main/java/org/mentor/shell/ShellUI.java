@@ -16,73 +16,73 @@ public class ShellUI implements StoreService {
     }
 
     @Override
-    @ShellMethod(value = "Create product", key = {"insert product"})
+    @ShellMethod(value = "Create product", key = {"c product"})
     public void createProduct() {
         storeService.createProduct();
     }
 
     @Override
-    @ShellMethod(value = "Create client", key = {"insert client"})
+    @ShellMethod(value = "Create client", key = {"c client"})
     public void createClient() {
         storeService.createClient();
     }
 
     @Override
-    @ShellMethod(value = "Create order", key = {"insert order"})
+    @ShellMethod(value = "Create order", key = {"c order"})
     public void createOrder() {
         storeService.createOrder();
     }
 
     @Override
-    @ShellMethod(value = "Read products", key = {"read products"})
+    @ShellMethod(value = "Read products", key = {"r product"})
     public void readProduct() {
         storeService.readProduct();
     }
 
     @Override
-    @ShellMethod(value = "Read clients", key = {"read clients"})
+    @ShellMethod(value = "Read clients", key = {"r client"})
     public void readClient() {
         storeService.readClient();
     }
 
     @Override
-    @ShellMethod(value = "Read orders", key = {"read orders"})
+    @ShellMethod(value = "Read orders", key = {"r order"})
     public void readOrder() {
         storeService.readOrder();
     }
 
     @Override
-    @ShellMethod(value = "Update product", key = {"update product"})
+    @ShellMethod(value = "Update product", key = {"u product"})
     public void updateProduct() {
         storeService.updateProduct();
     }
 
     @Override
-    @ShellMethod(value = "Update client", key = {"update client"})
+    @ShellMethod(value = "Update client", key = {"u client"})
     public void updateClient() {
         storeService.updateClient();
     }
 
     @Override
-    @ShellMethod(value = "Update order", key = {"update order"})
+    @ShellMethod(value = "Update order", key = {"u order"})
     public void updateOrder() {
         storeService.updateOrder();
     }
 
     @Override
-    @ShellMethod(value = "Delete product", key = {"delete product"})
+    @ShellMethod(value = "Delete product", key = {"d product"})
     public void deleteProduct() {
         storeService.deleteProduct();
     }
 
     @Override
-    @ShellMethod(value = "Delete client", key = {"delete client"})
+    @ShellMethod(value = "Delete client", key = {"d client"})
     public void deleteClient() {
         storeService.deleteClient();
     }
 
     @Override
-    @ShellMethod(value = "Delete order", key = {"delete order"})
+    @ShellMethod(value = "Delete order", key = {"d order"})
     public void deleteOrder() {
         storeService.deleteOrder();
     }

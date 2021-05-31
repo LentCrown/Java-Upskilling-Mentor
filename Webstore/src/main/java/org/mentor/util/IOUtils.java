@@ -18,11 +18,11 @@ public class IOUtils {
         while (true) {
             System.out.print(field_name + "answer[y/n(default)]> ");
             userInput = scanner.next();
-            if(userInput.matches("^[\\sYy]$")){
+            if(userInput.matches("^[Yy]$")){
                 update = true;
                 break;
             }
-            else if (userInput.matches("^[Nn]$")) {
+            else if (userInput.matches("^[\\sNn]$")) {
                 update = false;
                 break;
             }

@@ -1,6 +1,5 @@
 package org.mentor.repository;
 
-import jdk.jfr.DataAmount;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -20,11 +19,11 @@ public class Order {
     @Column(name = "PRICE", nullable = false)
     private Double totalPrice;
 
-    @OneToOne
+    @OneToOne(orphanRemoval = true)
     @JoinColumn(name="PRODUCT_ID", unique=true, nullable=false)
     private Product product;
 
-    @OneToOne
+    @OneToOne(orphanRemoval = true)
     @JoinColumn(name="CLIENT_ID", unique=true, nullable=false)
     private Client client;
 }

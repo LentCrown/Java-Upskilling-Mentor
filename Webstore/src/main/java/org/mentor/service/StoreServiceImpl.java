@@ -39,22 +39,31 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     public void createProduct() {
+        System.out.println();
         System.out.println("Creating new product");
         Product product = new Product();
         product.setDesc(IOUtils.readWords("desc", Constraints.REGEX_SENTENCE));
         product.setStored(IOUtils.readInteger("stored", Constraints.REGEX_NUMBERS));
-        product.setPrice(IOUtils.readDouble("name", Constraints.REGEX_PRICE));
+        product.setPrice(IOUtils.readDouble("price", Constraints.REGEX_PRICE));
         entityManager.getTransaction().begin();
         entityManager.persist(product);
-        try { entityManager.getTransaction().commit(); }
+        try {
+            entityManager.getTransaction().commit();
+            System.out.println("Product created.");
+        }
         catch (IllegalStateException | RollbackException e){
             e.printStackTrace();
             entityManager.getTransaction().rollback();
+            System.out.println("Transaction has been cancelled");
+        }
+        finally {
+            System.out.println();
         }
     }
 
     @Override
     public void createClient() {
+        System.out.println();
         System.out.println("Creating new client");
         Client client = new Client();
 
@@ -64,19 +73,28 @@ public class StoreServiceImpl implements StoreService{
 
         entityManager.getTransaction().begin();
         entityManager.persist(client);
-        try { entityManager.getTransaction().commit(); }
+        try {
+            entityManager.getTransaction().commit();
+            System.out.println("Client created.");
+        }
         catch (IllegalStateException | RollbackException e){
             e.printStackTrace();
             entityManager.getTransaction().rollback();
+            System.out.println("Transaction has been cancelled");
+        }
+        finally {
+            System.out.println();
         }
     }
 
     @Override
     public void createOrder() {
+        System.out.println();
+        System.out.println("Creating new order");
         List<Product> productList = productDao.findAll();
         List<Client> clientList = clientDao.findAll();
         if(productList.isEmpty() || clientList.isEmpty()){
-            System.out.println("No products and clients in system.. Add them first");
+            System.out.println("No products and(or) clients in system.. Add them first");
             return;
         }
 
@@ -91,15 +109,23 @@ public class StoreServiceImpl implements StoreService{
 
         entityManager.getTransaction().begin();
         entityManager.persist(order);
-        try { entityManager.getTransaction().commit(); }
+        try {
+            entityManager.getTransaction().commit();
+            System.out.println("Order created.");
+        }
         catch (IllegalStateException | RollbackException e){
             e.printStackTrace();
             entityManager.getTransaction().rollback();
+            System.out.println("Transaction has been cancelled");
+        }
+        finally {
+            System.out.println();
         }
     }
 
     @Override
     public void readProduct() {
+        System.out.println();
         List<Product> productList = productDao.findAll();
         if(productList.isEmpty()){
             System.out.println("No products in system");
@@ -108,10 +134,12 @@ public class StoreServiceImpl implements StoreService{
         System.out.println("SELECT * FROM PRODUCTS;");
         String[] rowNames = RflctUtilts.getClassFields(Product.class);
         IOUtils.displayQueryTable(productList, rowNames);
+        System.out.println();
     }
 
     @Override
     public void readClient() {
+        System.out.println();
         List<Client> clientList = clientDao.findAll();
         if(clientList.isEmpty()){
             System.out.println("No clients in system");
@@ -120,10 +148,12 @@ public class StoreServiceImpl implements StoreService{
         System.out.println("SELECT * FROM CLIENTS;");
         String[] rowNames = RflctUtilts.getClassFields(Client.class);
         IOUtils.displayQueryTable(clientList, rowNames);
+        System.out.println();
     }
 
     @Override
     public void readOrder() {
+        System.out.println();
         List<Order> orderList = orderDao.findAll();
         if(orderList.isEmpty()){
             System.out.println("No orders in system");
@@ -132,25 +162,84 @@ public class StoreServiceImpl implements StoreService{
         System.out.println("SELECT * FROM ORDERS;");
         String[] rowNames = RflctUtilts.getClassFields(Order.class);
         IOUtils.displayQueryTable(orderList, rowNames);
+        System.out.println();
     }
 
     @Override
     public void updateProduct() {
+        System.out.println();
+        System.out.println("Updating product..");
+        System.out.println("Select product to update");
+        IOUtils.displayQueryChoice(productDao.findAll());
+        Product product = productDao.findById(IOUtils.readInteger("id", Constraints.REGEX_NUMBERS));
+
+        if(IOUtils.readAnswer("desc"))
+            product.setDesc(IOUtils.readWords("desc",Constraints.REGEX_WORD_SINGLE));
+        if(IOUtils.readAnswer("price"))
+            product.setPrice(IOUtils.readDouble("price",Constraints.REGEX_WORD_SINGLE));
+        if(IOUtils.readAnswer("stored"))
+            product.setStored(IOUtils.readInteger("stored",Constraints.REGEX_WORD_SINGLE));
+
+        entityManager.getTransaction().begin();
+        entityManager.merge(product);
+        try {
+            entityManager.getTransaction().commit();
+            System.out.println("Product has been updated");
+        }
+        catch (IllegalStateException | RollbackException e){
+            e.printStackTrace();
+            entityManager.getTransaction().rollback();
+            System.out.println("Transaction has been cancelled");
+        }
+        finally {
+            System.out.println();
+        }
     }
 
     @Override
     public void updateClient() {
+        System.out.println();
+        System.out.println("Updating client..");
+        System.out.println("Select client to update");
+        IOUtils.displayQueryChoice(clientDao.findAll());
+        Client client = clientDao.findById(IOUtils.readInteger("id", Constraints.REGEX_NUMBERS));
 
+        if(IOUtils.readAnswer("name"))
+            client.setName(IOUtils.readWords("name",Constraints.REGEX_WORD_SINGLE));
+        if(IOUtils.readAnswer("surname"))
+            client.setSurname(IOUtils.readWords("surname",Constraints.REGEX_WORD_SINGLE));
+        if(IOUtils.readAnswer("phone_number"))
+            client.setPhone_number(IOUtils.readWords("phone_number",Constraints.REGEX_WORD_SINGLE));
+
+        entityManager.getTransaction().begin();
+        entityManager.merge(client);
+        try {
+            entityManager.getTransaction().commit();
+            System.out.println("Client has been updated");
+        }
+        catch (IllegalStateException | RollbackException e){
+            e.printStackTrace();
+            entityManager.getTransaction().rollback();
+            System.out.println("Transaction has been cancelled");
+        }
+        finally {
+            System.out.println();
+        }
     }
 
     @Override
     public void updateOrder() {
-        Order order = orderDao.findById(1);
-        if(IOUtils.readAnswer("merch_id")) {
+        System.out.println();
+        System.out.println("Updating order..");
+        System.out.println("Select order to update");
+        IOUtils.displayQueryChoice(orderDao.findAll());
+        Order order = orderDao.findById(IOUtils.readInteger("id", Constraints.REGEX_NUMBERS));
+
+        if(IOUtils.readAnswer("id_merch")) {
             IOUtils.displayQueryChoice(productDao.findAll());
             order.setProduct(productDao.findById(IOUtils.readInteger("id_merch", Constraints.REGEX_NUMBERS)));
         }
-        if(IOUtils.readAnswer("client_id")) {
+        if(IOUtils.readAnswer("id_client")) {
             IOUtils.displayQueryChoice(clientDao.findAll());
             order.setClient(clientDao.findById(IOUtils.readInteger("id_client", Constraints.REGEX_NUMBERS)));
         }
@@ -158,6 +247,21 @@ public class StoreServiceImpl implements StoreService{
             order.setHowMuchBuying(IOUtils.readInteger("amount", Constraints.REGEX_NUMBERS));
         if(IOUtils.readAnswer("totalPrice"))
             order.setTotalPrice(IOUtils.readDouble("totalPrice", Constraints.REGEX_PRICE));
+
+        entityManager.getTransaction().begin();
+        entityManager.merge(order);
+        try {
+            entityManager.getTransaction().commit();
+            System.out.println("Product was updated.");
+        }
+        catch (IllegalStateException | RollbackException e){
+            e.printStackTrace();
+            entityManager.getTransaction().rollback();
+            System.out.println("Transaction has been cancelled");
+        }
+        finally {
+            System.out.println();
+        }
     }
 
     @Override
@@ -166,10 +270,17 @@ public class StoreServiceImpl implements StoreService{
         Product product = productDao.findById(IOUtils.readInteger("choice", Constraints.REGEX_NUMBERS));
         entityManager.getTransaction().begin();
         entityManager.remove(product);
-        try { entityManager.getTransaction().commit(); }
+        try {
+            entityManager.getTransaction().commit();
+            System.out.println("Product was deleted.");
+        }
         catch (IllegalStateException | RollbackException e){
             e.printStackTrace();
             entityManager.getTransaction().rollback();
+            System.out.println("Transaction has been cancelled");
+        }
+        finally {
+            System.out.println();
         }
     }
 
@@ -179,10 +290,17 @@ public class StoreServiceImpl implements StoreService{
         Client client = clientDao.findById(IOUtils.readInteger("choice", Constraints.REGEX_NUMBERS));
         entityManager.getTransaction().begin();
         entityManager.remove(client);
-        try { entityManager.getTransaction().commit(); }
+        try {
+            entityManager.getTransaction().commit();
+            System.out.println("Client was deleted.");
+        }
         catch (IllegalStateException | RollbackException e){
             e.printStackTrace();
             entityManager.getTransaction().rollback();
+            System.out.println("Transaction has been cancelled");
+        }
+        finally {
+            System.out.println();
         }
     }
 
@@ -192,10 +310,17 @@ public class StoreServiceImpl implements StoreService{
         Order order = orderDao.findById(IOUtils.readInteger("choice", Constraints.REGEX_NUMBERS));
         entityManager.getTransaction().begin();
         entityManager.remove(order);
-        try { entityManager.getTransaction().commit(); }
+        try {
+            entityManager.getTransaction().commit();
+            System.out.println("Order has been deleted.");
+        }
         catch (IllegalStateException | RollbackException e){
             e.printStackTrace();
             entityManager.getTransaction().rollback();
+            System.out.println("Transaction has been cancelled");
+        }
+        finally {
+            System.out.println();
         }
     }
 }

@@ -20,4 +20,7 @@ public class Product{
     private Double price;
     @Column(name = "STORED", nullable = false)
     private Integer stored;
+
+    @OneToOne(mappedBy = "product")
+    private Order order;
 }
