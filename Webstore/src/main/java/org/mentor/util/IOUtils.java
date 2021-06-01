@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 @Service
 public class IOUtils {
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static boolean readAnswer(String field_name){
         String userInput;
