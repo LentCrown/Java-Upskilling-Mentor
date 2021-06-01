@@ -79,7 +79,7 @@ public class IOUtils {
             System.arraycopy(orders, 0, data[row], 0, rowNumbers);
         }
         TextTable tt = new TextTable(rowNames, data);
-        tt.setAddRowNumbering(true);
+        tt.setAddRowNumbering(false);
         tt.setSort(1);
         tt.printTable();
     }

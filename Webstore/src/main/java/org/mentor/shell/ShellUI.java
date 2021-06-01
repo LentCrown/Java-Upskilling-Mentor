@@ -47,8 +47,8 @@ public class ShellUI implements StoreService {
 
     @Override
     @ShellMethod(value = "Read orders", key = {"r order"})
-    public void readOrder() {
-        storeService.readOrder();
+    public void readReceipt() {
+        storeService.readReceipt();
     }
 
     @Override
@@ -65,8 +65,8 @@ public class ShellUI implements StoreService {
 
     @Override
     @ShellMethod(value = "Update order", key = {"u order"})
-    public void updateOrder() {
-        storeService.updateOrder();
+    public void updateReceipt() {
+        storeService.updateReceipt();
     }
 
     @Override
@@ -83,8 +83,8 @@ public class ShellUI implements StoreService {
 
     @Override
     @ShellMethod(value = "Delete order", key = {"d order"})
-    public void deleteOrder() {
-        storeService.deleteOrder();
+    public void deleteReceipt() {
+        storeService.deleteReceipt();
     }
 
     @ShellMethod(value = "Open H2 WebUI ", key = {"web"})

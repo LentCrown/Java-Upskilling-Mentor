@@ -6,11 +6,11 @@ public interface StoreService {
     void createOrder();
     void readProduct();
     void readClient();
-    void readOrder();
+    void readReceipt();
     void updateProduct();
     void updateClient();
-    void updateOrder();
+    void updateReceipt();
     void deleteProduct();
     void deleteClient();
-    void deleteOrder();
+    void deleteReceipt();
 }
