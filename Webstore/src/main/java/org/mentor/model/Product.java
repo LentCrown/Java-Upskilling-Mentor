@@ -1,4 +1,4 @@
-package org.mentor.repository;
+package org.mentor.model;
 
 import lombok.Data;
 
@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Data
+@Entity
 public class Product{
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE,
@@ -13,6 +14,7 @@ public class Product{
     @SequenceGenerator(name = "seq_product")
     private Integer id;
     private String desc;
+    @Column(name = "price_for_piece")
     private Double price;
     private Integer stored;
     //Bi-direct

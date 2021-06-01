@@ -1,8 +1,8 @@
 package org.mentor.dao;
 
-import org.mentor.repository.Client;
-import org.mentor.repository.Product;
-import org.mentor.repository.Receipt;
+import org.mentor.model.Client;
+import org.mentor.model.Product;
+import org.mentor.model.Receipt;
 
 import java.util.List;
 

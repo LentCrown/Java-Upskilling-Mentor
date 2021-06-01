@@ -1,6 +1,6 @@
 package org.mentor.dao;
 
-import org.mentor.repository.Client;
+import org.mentor.model.Client;
 
 import java.util.List;
 

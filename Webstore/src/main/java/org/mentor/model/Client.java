@@ -1,4 +1,4 @@
-package org.mentor.repository;
+package org.mentor.model;
 
 import lombok.Data;
 

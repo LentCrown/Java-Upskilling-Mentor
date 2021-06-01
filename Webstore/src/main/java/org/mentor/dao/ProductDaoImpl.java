@@ -1,8 +1,7 @@
 package org.mentor.dao;
 
-import javax.persistence.Persistence;
-import org.mentor.repository.Product;
-import org.mentor.util.JPAEntityManager;
+import org.mentor.model.Product;
+import org.mentor.jpa.JPAEntityManager;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

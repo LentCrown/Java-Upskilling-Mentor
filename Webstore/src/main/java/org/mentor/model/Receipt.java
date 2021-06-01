@@ -1,4 +1,4 @@
-package org.mentor.repository;
+package org.mentor.model;
 
 import lombok.Data;
 
@@ -9,10 +9,11 @@ import javax.persistence.*;
 public class Receipt {
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE,
-            generator = "seq_order")
-    @SequenceGenerator(name = "seq_order")
+            generator = "seq_receipt")
+    @SequenceGenerator(name = "seq_receipt")
     private Integer id;
-    private Integer howMuchBuying;
+    private Integer bought;
+    @Column(name = "total_price")
     private Double totalPrice;
 
     @ManyToOne(cascade = {
@@ -22,17 +23,17 @@ public class Receipt {
     @JoinColumn(name = "client_id")
     private Client client;
 
-/*    @ManyToOne(cascade = {
+    @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH
     })
     @JoinColumn(name = "product_id")
-    private Product product;*/
+    private Product product;
 
-    Receipt(){}
+    public Receipt(){}
 
-    public Receipt(Integer howMuchBuying, Double totalPrice) {
-        this.howMuchBuying = howMuchBuying;
+    public Receipt(Integer bought, Double totalPrice) {
+        this.bought = bought;
         this.totalPrice = totalPrice;
     }
 }

@@ -3,7 +3,7 @@ package org.mentor.service;
 public interface StoreService {
     void createProduct();
     void createClient();
-    void createOrder();
+    void createReceipt();
     void readProduct();
     void readClient();
     void readReceipt();

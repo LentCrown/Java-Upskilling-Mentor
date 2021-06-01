@@ -1,4 +1,4 @@
-package org.mentor.util;
+package org.mentor.jpa;
 
 import org.springframework.stereotype.Repository;
 
