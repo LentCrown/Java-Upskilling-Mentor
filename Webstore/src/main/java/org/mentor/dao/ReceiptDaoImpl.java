@@ -3,7 +3,6 @@ package org.mentor.dao;
 import org.mentor.model.Client;
 import org.mentor.model.Product;
 import org.mentor.model.Receipt;
-import org.mentor.jpa.JPAEntityManager;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

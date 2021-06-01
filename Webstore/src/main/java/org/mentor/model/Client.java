@@ -1,11 +1,13 @@
 package org.mentor.model;
 
 import lombok.Data;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Data
+@Repository
 @Entity
 public class Client {
     @Id
@@ -26,5 +28,13 @@ public class Client {
         this.name = name;
         this.surname = surname;
         this.phone_number = phone_number;
+    }
+
+    public Client(Integer id, String name, String surname, String phone_number, List<Receipt> receipts) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.phone_number = phone_number;
+        this.receipts = receipts;
     }
 }

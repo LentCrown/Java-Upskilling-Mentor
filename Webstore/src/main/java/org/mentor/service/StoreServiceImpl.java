@@ -8,7 +8,7 @@ import org.mentor.model.Product;
 import org.mentor.model.Receipt;
 import org.mentor.configuration.Constraints;
 import org.mentor.util.IOUtils;
-import org.mentor.jpa.JPAEntityManager;
+import org.mentor.dao.JPAEntityManager;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;

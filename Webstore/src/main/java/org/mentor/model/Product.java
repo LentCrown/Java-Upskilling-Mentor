@@ -1,11 +1,13 @@
 package org.mentor.model;
 
 import lombok.Data;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Data
+@Repository
 @Entity
 public class Product{
     @Id
