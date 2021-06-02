@@ -6,13 +6,13 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.*;
 
 @Data
-@Repository
 @Entity
-public class Receipt {
+@Table(name = "T_ORDER")
+public class Order {
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE,
-            generator = "seq_receipt")
-    @SequenceGenerator(name = "seq_receipt")
+            generator = "seq_order")
+    @SequenceGenerator(name = "seq_order")
     private Integer id;
     private Integer bought;
     @Column(name = "total_price")
@@ -22,8 +22,8 @@ public class Receipt {
             CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH
     })
-    @JoinColumn(name = "client_id")
-    private Client client;
+    @JoinColumn(name = "user_id")
+    private User user;
     //Bi-direct(Owner side)
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
@@ -32,18 +32,18 @@ public class Receipt {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    public Receipt(){}
+    public Order(){}
 
-    public Receipt(Integer bought, Double totalPrice) {
+    public Order(Integer bought, Double totalPrice) {
         this.bought = bought;
         this.totalPrice = totalPrice;
     }
 
-    public Receipt(Integer id, Integer bought, Double totalPrice, Client client, Product product) {
+    public Order(Integer id, Integer bought, Double totalPrice, User user, Product product) {
         this.id = id;
         this.bought = bought;
         this.totalPrice = totalPrice;
-        this.client = client;
+        this.user = user;
         this.product = product;
     }
 }

@@ -7,8 +7,8 @@ import javax.persistence.*;
 import java.util.List;
 
 @Data
-@Repository
 @Entity
+@Table(name = "T_PRODUCT")
 public class Product{
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE,
@@ -21,7 +21,7 @@ public class Product{
     private Integer stored;
     //Bi-direct
     @OneToMany(mappedBy = "product")
-    private List<Receipt> receipts;
+    private List<Order> orders;
 
     public Product() {}
 
