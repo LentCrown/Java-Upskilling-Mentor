@@ -5,6 +5,9 @@ import org.mentor.model.Product;
 import java.util.List;
 
 public interface ProductDao {
-    List<Product> findAll();
+    void create(Product product);
     Product findById(Integer id);
+    List<Product> findAll();
+    void update(Product product);
+    void delete(Product product);
 }

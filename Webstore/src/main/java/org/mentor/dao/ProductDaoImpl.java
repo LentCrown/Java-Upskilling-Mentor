@@ -1,12 +1,10 @@
 package org.mentor.dao;
 
 import org.mentor.model.Product;
+import org.mentor.model.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Repository
@@ -18,20 +16,33 @@ public class ProductDaoImpl implements ProductDao{
     }
 
     @Override
-    public List<Product> findAll() {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Product> cq = builder.createQuery(Product.class);
-        Root<Product> root = cq.from(Product.class);
-        cq.select(root);
-        return entityManager.createQuery(cq).getResultList();
+    public void create(Product product) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(product);
+        entityManager.getTransaction().commit();
     }
 
     @Override
     public Product findById(Integer id) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Product> cq = builder.createQuery(Product.class);
-        Root<Product> root = cq.from(Product.class);
-        cq.select(root).where(builder.equal(root.get("id"), id));
-        return entityManager.createQuery(cq).getSingleResult();
+        return entityManager.find(Product.class, id);
+    }
+
+    @Override
+    public List<Product> findAll() {
+        return entityManager.createQuery("SELECT e FROM Product e").getResultList();
+    }
+
+    @Override
+    public void update(Product product) {
+        entityManager.getTransaction().begin();
+        entityManager.merge(product);
+        entityManager.getTransaction().commit();
+    }
+
+    @Override
+    public void delete(Product product) {
+        entityManager.getTransaction().begin();
+        entityManager.remove(product);
+        entityManager.getTransaction().commit();
     }
 }

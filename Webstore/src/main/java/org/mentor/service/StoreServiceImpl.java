@@ -1,309 +1,175 @@
 package org.mentor.service;
 
-import org.mentor.dao.ClientDao;
-import org.mentor.dao.ReceiptDao;
-import org.mentor.dao.ProductDao;
-import org.mentor.model.Client;
+import org.mentor.dao.*;
+import org.mentor.domain.Pack;
+import org.mentor.domain.UserSession;
+import org.mentor.model.Credential;
+import org.mentor.model.Order;
 import org.mentor.model.Product;
-import org.mentor.model.Receipt;
-import org.mentor.configuration.Constraints;
-import org.mentor.util.IOUtils;
-import org.mentor.dao.JPAEntityManager;
+import org.mentor.model.User;
+import org.mentor.util.IUser;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Scanner;
 
 @Service
 public class StoreServiceImpl implements StoreService{
-
-    private final ReceiptDao receiptDao;
-    private final ClientDao clientDao;
+    private static boolean isFirstUser = true;
+    private final OrderDao orderDao;
+    private final UserDao userDao;
     private final ProductDao productDao;
-    private final Scanner scanner;
-    private final EntityManager entityManager;
-    private final String[] receiptRows = {"id", "bought", "totalPrice", "client_id", "product_id"};
-    private final String[] productRows = {"id", "desc", "price_for_piece", "stored"};
-    private final String[] clientRows = {"id", "name", "surname", "phone_number"};
+    private final CredentialsDao credentialsDao;
 
-    public StoreServiceImpl(ReceiptDao receiptDao, ClientDao clientDao, ProductDao productDao) {
-        this.receiptDao = receiptDao;
-        this.clientDao = clientDao;
+    public StoreServiceImpl(OrderDao orderDao, UserDao userDao, ProductDao productDao, CredentialsDao credentialsDao) {
+        this.orderDao = orderDao;
+        this.userDao = userDao;
         this.productDao = productDao;
-        this.scanner = new Scanner(System.in);
-        this.entityManager = JPAEntityManager.getInstance().getEntityManager();
+        this.credentialsDao = credentialsDao;
     }
 
     @Override
-    public void createProduct() {
+    public Boolean register() {
+        String[] userData = IUser.enterUserCredentials();
+        String[] userCreds = IUser.enterAuthCredentials();
+
+        User new_user = new User();
+        new_user.setName(userData[0]);
+        new_user.setSurname(userData[1]);
+        new_user.setPhone_number(userData[2]);
+        Credential credential = new Credential();
+        credential.setLogin(userCreds[0]);
+        credential.setPassword(userCreds[1]);
+        credential.setIs_admin(isFirstUser);
+        new_user.setCredential(credential);
+
+        userDao.create(new_user);
+        if (isFirstUser) isFirstUser=false;
+        return true;
+    }
+
+    @Override
+    public UserSession logon() {
+        String[] userCreds = IUser.enterAuthCredentials();
+        Integer user_id = credentialsDao.findIdByLogin(userCreds[0]);
+        if (user_id == null) {
+            return null;
+        }
+        User user_candidate = userDao.findById(user_id);
+        if (user_candidate.getCredential().getPassword().equals(userCreds[1]))
+            return new UserSession(user_candidate.getId(), user_candidate.getName(), user_candidate.getSurname());
+        return null;
+    }
+
+    @Override
+    public Boolean createOrder(UserSession userSession) {
+        Double totalPrice = 0.00;
+        User user = userDao.findById(userSession.getId());
+        List<Pack> packs = IUser.enterOrderCredentials(productDao.findAll());
+        Order order = new Order();
+        order.setUser(user);
+        for(Pack pack:packs) {
+            Product product = pack.getProduct();
+            totalPrice = totalPrice + product.getPrice() * pack.getAmount();
+            order.getProducts().add(product);
+        }
+        order.setTotalPrice(totalPrice);
+        orderDao.create(order);
+        return true;
+    }
+
+    @Override
+    public Boolean createProduct(UserSession userSession) {
+        User user = userDao.findById(userSession.getId());
+        if(!user.getCredential().getIs_admin()) {
+            return false;
+        }
+        String[] productCreds = IUser.enterProductCredentials();
+
         Product product = new Product();
+        product.setDesc(productCreds[0]);
+        product.setPrice(Double.parseDouble(productCreds[1]));
+        product.setStored(Integer.parseInt(productCreds[2]));
 
-        product.setDesc(IOUtils.readWords("desc", Constraints.REGEX_SENTENCE));
-        product.setStored(IOUtils.readInteger("stored", Constraints.REGEX_NUMBERS));
-        product.setPrice(IOUtils.readDouble("price", Constraints.REGEX_PRICE));
-
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.persist(product);
-            entityManager.flush();
-            entityManager.getTransaction().commit();
-            System.out.println("Product created.");
-        }
-        catch (RuntimeException e){
-            entityManager.getTransaction().rollback();
-            e.printStackTrace();
-            System.out.println("Transaction has been cancelled");
-        }
-        finally {
-            System.out.println();
-        }
+        productDao.create(product);
+        return true;
     }
 
     @Override
-    public void createClient() {
-        Client client = new Client();
-
-        client.setName(IOUtils.readWords("name", Constraints.REGEX_WORD_SINGLE));
-        client.setSurname(IOUtils.readWords("surname", Constraints.REGEX_WORD_SINGLE));
-        client.setPhone_number(IOUtils.readWords("phone", Constraints.REGEX_PHONE));
-
-        try{
-            entityManager.getTransaction().begin();
-            entityManager.persist(client);
-            entityManager.flush();
-            entityManager.getTransaction().commit();
-            System.out.println("\nClient created.");
-        }
-        catch (RuntimeException e){
-            entityManager.getTransaction().rollback();
-            System.out.println("\nTransaction has been cancelled");
-            e.printStackTrace();
-        }
+    public List<Order> showUserOrders(UserSession userSession) {
+        return orderDao.findByClient(userDao.findById(userSession.getId()));
     }
 
     @Override
-    public void createReceipt() {
-        if (productDao.findAll().isEmpty() || clientDao.findAll().isEmpty()){
-            System.out.println("No clients and(or) products. Create at least one for each");
-            return;
-        }
-        Receipt receipt = new Receipt();
-        readProduct();
-        Product product = productDao.findById(IOUtils.readInteger("id_merch", Constraints.REGEX_NUMBERS));
-        if(product==null){
-            System.out.println("No such product");
-            return;
-        }
-        receipt.setProduct(product);
-        readClient();
-        Client client = clientDao.findById(IOUtils.readInteger("id_client", Constraints.REGEX_NUMBERS));
-        if(client==null){
-            System.out.println("No such product");
-            return;
-        }
-        receipt.setClient(client);
-        receipt.setBought(IOUtils.readInteger("amount", Constraints.REGEX_NUMBERS));
-        receipt.setTotalPrice(IOUtils.readDouble("totalPrice", Constraints.REGEX_PRICE));
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.persist(receipt);
-            entityManager.flush();
-            entityManager.getTransaction().commit();
-            System.out.println("\nClient created.");
-        }
-        catch (RuntimeException e){
-            entityManager.getTransaction().rollback();
-            System.out.println("\nTransaction has been cancelled");
-            e.printStackTrace();
-        }
+    public List<Product> showProducts() { return productDao.findAll(); }
+
+    @Override
+    public Boolean changeLoggedUserPassword(UserSession userSession) {
+        System.out.println("change password");
+        User user = userDao.findById(userSession.getId());
+        if (user == null) return false;
+        Scanner scanner = new Scanner(System.in);
+        Credential credential = credentialsDao.findById(user.getId());
+        credential.setPassword(scanner.nextLine());
+        credentialsDao.updateCredential(credential);
+        return true;
     }
 
     @Override
-    public void readProduct() {
-        List<String> queryResult = IOUtils.stringListProducts(productDao.findAll());
-        if (queryResult == null) {
-            System.out.println("No products");
-            return;
-        }
-        IOUtils.displayQueryTable(queryResult, productRows);
+    public Boolean deleteUser(UserSession userSession) {
+
+        Scanner scanner = new Scanner(System.in);
+        Integer userId = scanner.nextInt();
+        if(userId == 1) return false;
+        User user = userDao.findById(userId);
+        if (user == null) return null;
+        userDao.delete(user);
+        return true;
     }
 
     @Override
-    public void readClient() {
-        List<String> queryResult = IOUtils.stringListClients(clientDao.findAll());
-        if (queryResult == null) {
-            System.out.println("No clients");
-            return;
-        }
-        IOUtils.displayQueryTable(queryResult, clientRows);
+    public Boolean deleteProduct(UserSession userSession) {
+        System.out.println("delete product");
+        Scanner scanner = new Scanner(System.in);
+        Product product = productDao.findById(scanner.nextInt());
+        productDao.delete(product);
+        return true;
     }
 
     @Override
-    public void readReceipt() {
-        List<String> queryResult = IOUtils.stringListReceipts(receiptDao.findAll());
-        if (queryResult == null){
-            System.out.println("No receipts");
-            return;
-        }
-        IOUtils.displayQueryTable(queryResult, receiptRows);
+    public Boolean deleteOrder(UserSession userSession) {
+        System.out.println("delete order");
+        Scanner scanner = new Scanner(System.in);
+        Order order = orderDao.findById(scanner.nextInt());
+        orderDao.delete(order);
+        return true;
     }
 
     @Override
-    public void updateProduct() {
-        Product product = productDao.findById(IOUtils.readInteger("id", Constraints.REGEX_NUMBERS));
-        if(product==null){
-            System.out.println("No such product");
-            return;
-        }
-        if(IOUtils.readAnswer("desc"))
-            product.setDesc(IOUtils.readWords("desc",Constraints.REGEX_WORD_SINGLE));
-        if(IOUtils.readAnswer("price"))
-            product.setPrice(IOUtils.readDouble("price",Constraints.REGEX_WORD_SINGLE));
-        if(IOUtils.readAnswer("stored"))
-            product.setStored(IOUtils.readInteger("stored",Constraints.REGEX_WORD_SINGLE));
-
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.merge(product);
-            entityManager.flush();
-            entityManager.getTransaction().commit();
-            System.out.println("Product has been updated");
-        }
-        catch (RuntimeException e){
-            entityManager.getTransaction().rollback();
-            e.printStackTrace();
-            System.out.println("Transaction has been cancelled");
-        }
+    public Boolean revokeAdminAccess(UserSession userSession) {
+        User user = userDao.findById(userSession.getId());
+        if (user == null) return null;
+        if(!user.getCredential().getIs_admin()) return false;
+        List<User> admins = userDao.findAdmins();
+        for (User admin: admins) System.out.println(admin.toString());
+        Scanner scanner = new Scanner(System.in);
+        Credential credential = credentialsDao.findById(scanner.nextInt());
+        credential.setIs_admin(true);
+        credentialsDao.updateCredential(credential);
+        return true;
     }
 
     @Override
-    public void updateClient() {
-        Client client = clientDao.findById(IOUtils.readInteger("id", Constraints.REGEX_NUMBERS));
-        if(client==null){
-            System.out.println("No such client");
-            return;
-        }
-
-        if(IOUtils.readAnswer("name"))
-            client.setName(IOUtils.readWords("name",Constraints.REGEX_WORD_SINGLE));
-        if(IOUtils.readAnswer("surname"))
-            client.setSurname(IOUtils.readWords("surname",Constraints.REGEX_WORD_SINGLE));
-        if(IOUtils.readAnswer("phone_number"))
-            client.setPhone_number(IOUtils.readWords("phone_number",Constraints.REGEX_WORD_SINGLE));
-
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.merge(client);
-            entityManager.flush();
-            entityManager.getTransaction().commit();
-            System.out.println("Client has been updated");
-        }
-        catch (RuntimeException e){
-            entityManager.getTransaction().rollback();
-            e.printStackTrace();
-            System.out.println("Transaction has been cancelled");
-        }
-    }
-
-    @Override
-    public void updateReceipt() {
-        Receipt receipt = receiptDao.findById(IOUtils.readInteger("id", Constraints.REGEX_NUMBERS));
-        if(receipt==null){
-            System.out.println("No such receipt");
-            return;
-        }
-
-        if(IOUtils.readAnswer("product_id")) {
-            readProduct();
-            receipt.setProduct(productDao.findById(IOUtils.readInteger("product_id", Constraints.REGEX_NUMBERS)));
-        }
-        if(IOUtils.readAnswer("client_id")) {
-            readClient();
-            receipt.setClient(clientDao.findById(IOUtils.readInteger("client_id", Constraints.REGEX_NUMBERS)));
-        }
-        if(IOUtils.readAnswer("amount"))
-            receipt.setBought(IOUtils.readInteger("bought", Constraints.REGEX_NUMBERS));
-        if(IOUtils.readAnswer("totalPrice"))
-            receipt.setTotalPrice(IOUtils.readDouble("totalPrice", Constraints.REGEX_PRICE));
-
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.merge(receipt);
-            entityManager.flush();
-            entityManager.getTransaction().commit();
-            System.out.println("Product was updated.");
-        }
-        catch (RuntimeException e){
-            entityManager.getTransaction().rollback();
-            e.printStackTrace();
-            System.out.println("Transaction has been cancelled");
-        }
-    }
-
-    @Override
-    public void deleteProduct() {
-        Product product = productDao.findById(IOUtils.readInteger("choice", Constraints.REGEX_NUMBERS));
-        if(product==null){
-            System.out.println("No such product");
-            return;
-        }
-        List<Receipt> receiptList = receiptDao.findByProduct(product);
-        try{
-            entityManager.getTransaction().begin();
-            for(Receipt receipt:receiptList)
-                entityManager.remove(receipt);
-            entityManager.remove(product);
-            entityManager.flush();
-            entityManager.getTransaction().commit();
-        }
-        catch (RuntimeException e){
-            entityManager.getTransaction().rollback();
-            e.printStackTrace();
-            System.out.println("Transaction has been cancelled");
-        }
-    }
-
-    @Override
-    public void deleteClient() {
-        Client client = clientDao.findById(IOUtils.readInteger("choice", Constraints.REGEX_NUMBERS));
-        if(client==null){
-            System.out.println("No such client");
-            return;
-        }
-        List<Receipt> receiptList = receiptDao.findByClient(client);
-        try{
-            entityManager.getTransaction().begin();
-            for(Receipt receipt:receiptList)
-                entityManager.remove(receipt);
-            entityManager.remove(client);
-            entityManager.flush();
-            entityManager.getTransaction().commit();
-        }
-        catch (RuntimeException e){
-            entityManager.getTransaction().rollback();
-            e.printStackTrace();
-            System.out.println("Transaction has been cancelled");
-        }
-    }
-
-    @Override
-    public void deleteReceipt() {
-        Receipt receipt = receiptDao.findById(IOUtils.readInteger("choice", Constraints.REGEX_NUMBERS));
-        if(receipt==null){
-            System.out.println("No such receipt");
-            return;
-        }
-        try{
-            entityManager.getTransaction().begin();
-            entityManager.remove(receipt);
-            entityManager.flush();
-            entityManager.getTransaction().commit();
-        }
-        catch (RuntimeException e){
-            entityManager.getTransaction().rollback();
-            e.printStackTrace();
-            System.out.println("Transaction has been cancelled");
-        }
+    public Boolean grantAdminAccess(UserSession userSession) {
+        User user = userDao.findById(userSession.getId());
+        if (user == null) return null;
+        if(!user.getCredential().getIs_admin()) return false;
+        List<User> clients = userDao.findClients();
+        for (User client: clients) System.out.println(client.toString());
+        Scanner scanner = new Scanner(System.in);
+        Credential credential = credentialsDao.findById(scanner.nextInt());
+        credential.setIs_admin(true);
+        credentialsDao.updateCredential(credential);
+        return true;
     }
 }

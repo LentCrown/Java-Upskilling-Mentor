@@ -1,9 +1,9 @@
 package org.mentor.model;
 
 import lombok.Data;
-import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -24,26 +24,19 @@ public class Order {
     })
     @JoinColumn(name = "user_id")
     private User user;
-    //Bi-direct(Owner side)
-    @ManyToOne(cascade = {
+    @ManyToMany(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH
     })
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinTable(name="T_Ordered_Products",
+                joinColumns = {@JoinColumn(name="order_id")},
+                inverseJoinColumns = {@JoinColumn(name="product_id")})
+    private List<Product> products;
 
     public Order(){}
 
     public Order(Integer bought, Double totalPrice) {
         this.bought = bought;
         this.totalPrice = totalPrice;
-    }
-
-    public Order(Integer id, Integer bought, Double totalPrice, User user, Product product) {
-        this.id = id;
-        this.bought = bought;
-        this.totalPrice = totalPrice;
-        this.user = user;
-        this.product = product;
     }
 }

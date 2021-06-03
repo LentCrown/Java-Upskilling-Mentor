@@ -1,7 +1,6 @@
 package org.mentor.model;
 
 import lombok.Data;
-import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import java.util.List;
@@ -18,6 +17,11 @@ public class User {
     private String name;
     private String surname;
     private String phone_number;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cred_id")
+    private Credential credential;
+
     //Bi-direct
     @OneToMany(mappedBy = "user")
     private List<Order> orders;

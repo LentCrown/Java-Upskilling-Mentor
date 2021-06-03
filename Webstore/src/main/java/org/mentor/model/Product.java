@@ -1,7 +1,6 @@
 package org.mentor.model;
 
 import lombok.Data;
-import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import java.util.List;
@@ -19,8 +18,11 @@ public class Product{
     @Column(name = "price_for_piece")
     private Double price;
     private Integer stored;
-    //Bi-direct
-    @OneToMany(mappedBy = "product")
+
+    @ManyToMany
+    @JoinTable(name="T_Ordered_Products",
+            joinColumns = {@JoinColumn(name="product_id")},
+            inverseJoinColumns = {@JoinColumn(name="order_id")})
     private List<Order> orders;
 
     public Product() {}
