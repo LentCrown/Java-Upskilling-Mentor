@@ -7,23 +7,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Entity
+@Entity(name = "T_PRODUCT")
 @Table(name = "T_PRODUCT")
 public class Product{
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE,
-            generator = "seq_product")
-    @SequenceGenerator(name = "seq_product")
+            generator = "SEQ_PRODUCT")
+    @SequenceGenerator(name = "SEQ_PRODUCT")
+    @Column(name = "ID")
     private Integer id;
+    @Column(name = "DESCRIPTION")
     private String desc;
-    @Column(name = "price_for_piece")
+    @Column(name = "PRICE")
     private Double price;
+    @Column(name = "STORED")
     private Integer stored;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name="T_Ordered_Products",
-            joinColumns = {@JoinColumn(name="product_id")},
-            inverseJoinColumns = {@JoinColumn(name="order_id")})
+            joinColumns = {@JoinColumn(name="PRODUCT_ID")},
+            inverseJoinColumns = {@JoinColumn(name="ORDER_ID")})
     private List<Order> orders = new ArrayList<>();
 
     public Product() {}

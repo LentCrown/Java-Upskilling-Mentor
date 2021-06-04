@@ -6,27 +6,26 @@ import javax.persistence.*;
 import java.util.List;
 
 @Data
-@Entity
+@Entity(name = "T_USER")
 @Table(name = "T_USER")
 public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE,
-            generator = "seq_user")
-    @SequenceGenerator(name = "seq_user")
-    @Column(name = "id")
+            generator = "SEQ_USER")
+    @SequenceGenerator(name = "SEQ_USER")
+    @Column(name = "ID")
     private Integer id;
-    @Column(name = "name")
+    @Column(name = "NAME")
     private String name;
-    @Column(name = "surname")
+    @Column(name = "SURNAME")
     private String surname;
-    @Column(name = "phone_number")
+    @Column(name = "PHONE_NUMBER")
     private String phone_number;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cred_id")
+    @JoinColumn(name = "CRED_ID")
     private Credential credential;
 
-    //Bi-direct
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orders;
 

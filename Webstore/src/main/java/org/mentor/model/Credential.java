@@ -5,20 +5,20 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Data
-@Entity
+@Entity(name = "T_CREDENTIALS")
 @Table(name = "T_CREDENTIALS")
 public class Credential {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE,
             generator = "seq_credential")
     @SequenceGenerator(name = "seq_credential")
-    @Column(name = "id")
+    @Column(name = "ID")
     private Integer id;
-    @Column(name = "login")
+    @Column(name = "LOGIN")
     private String login;
-    @Column(name = "password")
+    @Column(name = "PASSWORD")
     private String password;
-    @Column(name = "is_admin")
+    @Column(name = "IS_ADMIN")
     private Boolean is_admin;
 
     @OneToOne(mappedBy = "credential", cascade = CascadeType.ALL)

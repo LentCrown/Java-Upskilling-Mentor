@@ -8,31 +8,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Entity
+@Entity(name = "T_ORDER")
 @Table(name = "T_ORDER")
 public class Order {
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE,
-            generator = "seq_order")
-    @SequenceGenerator(name = "seq_order")
-    @Column(name="id")
+            generator = "SEQ_ORDER")
+    @SequenceGenerator(name = "SEQ_ORDER")
+    @Column(name="ID")
     private Integer id;
-    @Column(name="order_time")
+    @Column(name="ORDER_TIME")
     private Timestamp orderTime;
-    @Column(name = "total_price")
+    @Column(name = "TOTAL_PRICE")
     private Double totalPrice;
 
     @ManyToOne(cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "USER_ID")
     private User user;
 
     @ManyToMany(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH
     })
-    @JoinTable(name="T_Ordered_Products",
-                joinColumns = {@JoinColumn(name="order_id")},
-                inverseJoinColumns = {@JoinColumn(name="product_id")})
+    @JoinTable(name="T_ORDERED_PRODUCTS",
+                joinColumns = {@JoinColumn(name="ORDER_ID")},
+                inverseJoinColumns = {@JoinColumn(name="PRODUCT_ID")})
     private List<Product> products = new ArrayList<>();
 
     public Order(){}
