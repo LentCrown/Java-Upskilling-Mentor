@@ -6,17 +6,15 @@ import org.mentor.model.Order;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.Query;
 import java.util.List;
 
 @Repository
 public class OrderDaoImpl implements OrderDao {
     private final EntityManager entityManager;
 
-    public OrderDaoImpl() {
-        this.entityManager = JPAEntityManager.getInstance().getEntityManager();
+    public OrderDaoImpl(JPAEntityManager jpaEntityManager) {
+        this.entityManager = jpaEntityManager.getEntityManager();
     }
 
     @Override
@@ -38,7 +36,9 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public List<Order> findByClient(User user) {
-        return null;
+        Query query = entityManager.createQuery("SELECT u FROM Order u WHERE u.user = ?1");
+        query.setParameter(1,user);
+        return query.getResultList();
     }
 
     @Override

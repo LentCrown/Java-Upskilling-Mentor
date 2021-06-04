@@ -11,8 +11,8 @@ import java.util.List;
 public class ProductDaoImpl implements ProductDao{
     private final EntityManager entityManager;
 
-    public ProductDaoImpl() {
-        this.entityManager = JPAEntityManager.getInstance().getEntityManager();
+    public ProductDaoImpl(JPAEntityManager jpaEntityManager) {
+        this.entityManager = jpaEntityManager.getEntityManager();
     }
 
     @Override

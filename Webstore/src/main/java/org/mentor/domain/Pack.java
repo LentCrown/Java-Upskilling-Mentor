@@ -3,11 +3,10 @@ package org.mentor.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.mentor.model.Product;
 
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
 public class Pack {
-    private Product product;
+    private Integer product_id;
     private Integer amount;
 }

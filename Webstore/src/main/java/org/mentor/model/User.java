@@ -13,9 +13,13 @@ public class User {
     @GeneratedValue(strategy=GenerationType.SEQUENCE,
             generator = "seq_user")
     @SequenceGenerator(name = "seq_user")
+    @Column(name = "id")
     private Integer id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "surname")
     private String surname;
+    @Column(name = "phone_number")
     private String phone_number;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -23,7 +27,7 @@ public class User {
     private Credential credential;
 
     //Bi-direct
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orders;
 
     public User() {}

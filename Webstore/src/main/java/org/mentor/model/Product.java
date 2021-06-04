@@ -3,6 +3,7 @@ package org.mentor.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,11 +20,11 @@ public class Product{
     private Double price;
     private Integer stored;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name="T_Ordered_Products",
             joinColumns = {@JoinColumn(name="product_id")},
             inverseJoinColumns = {@JoinColumn(name="order_id")})
-    private List<Order> orders;
+    private List<Order> orders = new ArrayList<>();
 
     public Product() {}
 
