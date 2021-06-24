@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:webstore
+    initialization-mode: always
+    show-sql: true
+    driver-class-name: org.h2.Driver
+    username: sa
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    database: h2
+logging:
+  level:
+    root: WARN
+    org.mentor.*: DEBUG
