@@ -1,8 +1,7 @@
 package org.mentor.dao;
 
-import org.mentor.model.User;
-import org.mentor.model.Product;
 import org.mentor.model.Order;
+import org.mentor.model.User;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,30 +26,28 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Order> findAll() {
         return entityManager.createQuery("SELECT u FROM T_ORDER u").getResultList();
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Order> findByUser(User user) {
+        Query query = entityManager.createQuery("SELECT u FROM T_ORDER u WHERE u.user=:user");
+        query.setParameter("user", user);
+        return query.getResultList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Order findById(Integer id) {
         return entityManager.find(Order.class, id);
     }
 
     @Override
-    public List<Order> findByClient(User user) {
-        Query query = entityManager.createQuery("SELECT u FROM T_ORDER u WHERE u.user = :user");
-        query.setParameter("user",user);
-        return query.getResultList();
-    }
-
-    @Override
-    public List<Order> findByProduct(Product product) {
-        return null;
-    }
-
-    @Override
     @Transactional
     public void delete(Order order) {
-        entityManager.remove(order);
+        entityManager.remove(entityManager.contains(order) ? order : entityManager.merge(order));
     }
 }

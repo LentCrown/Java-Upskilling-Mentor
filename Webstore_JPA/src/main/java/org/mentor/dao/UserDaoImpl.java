@@ -24,11 +24,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User findById(Integer id) {
         return entityManager.find(User.class,id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> findAll() {
         return entityManager.createQuery("SELECT u FROM T_USER u").getResultList();
     }
@@ -36,6 +38,6 @@ public class UserDaoImpl implements UserDao {
     @Override
     @Transactional
     public void delete(User user) {
-        entityManager.remove(user);
+        entityManager.remove(entityManager.contains(user) ? user : entityManager.merge(user));
     }
 }

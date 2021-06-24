@@ -25,11 +25,13 @@ public class ProductDaoImpl implements ProductDao{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Product findById(Integer id) {
         return entityManager.find(Product.class, id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Product> findAll() {
         return entityManager.createQuery("SELECT e FROM T_PRODUCT e").getResultList();
     }
@@ -37,6 +39,6 @@ public class ProductDaoImpl implements ProductDao{
     @Override
     @Transactional
     public void delete(Product product) {
-        entityManager.remove(product);
+        entityManager.remove(entityManager.contains(product) ? product : entityManager.merge(product));
     }
 }

@@ -10,9 +10,7 @@ import java.util.List;
 @Table(name = "T_USER")
 public class User {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE,
-            generator = "SEQ_USER")
-    @SequenceGenerator(name = "SEQ_USER")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Integer id;
     @Column(name = "NAME")
@@ -39,5 +37,10 @@ public class User {
         this.surname = surname;
         this.phone_number = phone_number;
         this.orders = orders;
+    }
+
+    @Override
+    public String toString() {
+        return id + "   " + name + "   " + surname + "   " + phone_number;
     }
 }

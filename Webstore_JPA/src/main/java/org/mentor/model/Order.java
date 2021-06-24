@@ -12,9 +12,7 @@ import java.util.List;
 @Table(name = "T_ORDER")
 public class Order {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE,
-            generator = "SEQ_ORDER")
-    @SequenceGenerator(name = "SEQ_ORDER")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ID")
     private Integer id;
     @Column(name="ORDER_TIME")
@@ -26,14 +24,8 @@ public class Order {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @ManyToMany(cascade = {
-            CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH
-    })
-    @JoinTable(name="T_ORDERED_PRODUCTS",
-                joinColumns = {@JoinColumn(name="ORDER_ID")},
-                inverseJoinColumns = {@JoinColumn(name="PRODUCT_ID")})
-    private List<Product> products = new ArrayList<>();
+    @OneToMany(mappedBy="order", fetch = FetchType.EAGER)
+    private List<SubOrder> orderedProducts;
 
     public Order(){}
 
@@ -46,5 +38,27 @@ public class Order {
     @Transient
     public void setLastEdited() {
         this.orderTime = new Timestamp(System.currentTimeMillis());
+    }
+
+    public void addProduct(Product product, Integer bought, Double sub_price) {
+        SubOrder orderedProduct = new SubOrder();
+        orderedProduct.setOrder(this);
+        orderedProduct.setProduct(product);
+        orderedProduct.setOrder_id(this.getId());
+        orderedProduct.setProduct_id(product.getId());
+        orderedProduct.setBought(bought);
+        orderedProduct.setSub_price(sub_price);
+
+        if(this.orderedProducts == null)
+            this.orderedProducts = new ArrayList<>();
+
+        this.orderedProducts.add(orderedProduct);
+        // Also add the association object to the employee.
+        product.getOrderedProducts().add(orderedProduct);
+    }
+
+    @Override
+    public String toString() {
+        return id + "   " + orderTime + "   " + totalPrice;
     }
 }
